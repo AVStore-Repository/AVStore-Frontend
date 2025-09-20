@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { BASE_URL } from "../config/config";
 
 export default function PaymentPage() {
   const [loading, setLoading] = useState(false);
@@ -21,7 +22,7 @@ export default function PaymentPage() {
     setError(null);
 
     try {
-      const res = await fetch("http://localhost:5000/api/payment/create-session", {
+      const res = await fetch(`${BASE_URL}/payment/create-session`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

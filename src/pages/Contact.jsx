@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { api, handleResponse } from '../services/api';
+import { BASE_URL } from '../config/config';
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
@@ -40,7 +41,7 @@ export default function Contact() {
   // Test function to check API connection
   const testApiConnection = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/health');
+      const response = await fetch(`${BASE_URL}/health`);
       const data = await response.json();
       console.log('API health check:', data);
       alert(`API connection: ${response.ok ? 'OK' : 'Failed'}\n${JSON.stringify(data)}`);

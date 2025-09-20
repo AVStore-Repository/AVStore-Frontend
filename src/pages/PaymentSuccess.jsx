@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
+import { BASE_URL } from "../config/config";
 
 export default function PaymentSuccess() {
   const [order, setOrder] = useState(null);
@@ -22,7 +23,7 @@ export default function PaymentSuccess() {
         const headers = token ? { "Authorization": `Bearer ${token}` } : {};
         
         const response = await fetch(
-          `${process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api"}/orders/${orderId}`,
+          `${BASE_URL}/orders/${orderId}`,
           { headers }
         );
 
@@ -30,7 +31,7 @@ export default function PaymentSuccess() {
           // If unauthorized, try without token (public access)
           if (response.status === 401) {
             const publicResponse = await fetch(
-              `${process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api"}/orders/${orderId}`
+              `${BASE_URL}/orders/${orderId}`
             );
             
             if (!publicResponse.ok) {

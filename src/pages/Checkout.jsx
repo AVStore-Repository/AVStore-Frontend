@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { CartContext } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../config/config";
 
 export default function Checkout() {
   const { cart, clearCart } = useContext(CartContext);
@@ -86,7 +87,7 @@ export default function Checkout() {
       console.log("Submitting order:", orderData);
 
       const orderResponse = await fetch(
-        `${process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api"}/orders`,
+        `${BASE_URL}/orders`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -105,7 +106,7 @@ export default function Checkout() {
       if (form.paymentMethod === "card") {
         // Create session for Seylan Bank
         const res = await fetch(
-          `${process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api"}/payment/create-session`,
+          `${BASE_URL}/payment/create-session`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -133,7 +134,7 @@ export default function Checkout() {
       } else {
         // Cash payment
         const updateResponse = await fetch(
-          `${process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api"}/orders/${order.id}/status`,
+          `${BASE_URL}/orders/${order.id}/status`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },

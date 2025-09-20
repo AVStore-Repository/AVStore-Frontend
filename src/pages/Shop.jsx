@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect, useRef } from "react";
 import { FaShoppingCart, FaCheck } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { CartContext } from "../context/CartContext";
+import { BASE_URL } from "../config/config";
 
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat("en-LK", {
@@ -799,7 +800,7 @@ export default function Shop() {
 
   const getAvailableProduct = async ()=>{
      const response = await fetch(
-        "http://localhost:5000/api/products/", 
+        `${BASE_URL}/products/`, 
         {
           method: "GET",
           headers: { 

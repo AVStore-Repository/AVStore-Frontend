@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../config/config";
 
 export default function PaymentResponseHandler() {
   const location = useLocation();
@@ -20,7 +21,7 @@ export default function PaymentResponseHandler() {
         if (transactionRef) {
           try {
             const response = await fetch(
-              `${process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api"}/payment/status/${transactionRef}`
+              `${BASE_URL}/payment/status/${transactionRef}`
             );
             
             if (response.ok) {
