@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { CartContext } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../config/config";
+import axios from "axios";
 
 export default function Checkout() {
   const { cart, clearCart } = useContext(CartContext);
@@ -132,31 +133,41 @@ export default function Checkout() {
           throw new Error("Invalid session response");
         }
       } else {
-        // Cash payment
-        const updateResponse = await fetch(
-          `${BASE_URL}/orders/${order.id}/status`,
-          {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ status: "confirmed" }),
+        try {
+          const res = await axios.post("http://localhost:5000/api/payment/create-koko-payment", {
+            orderId: 123,
+            amount: 15000,
+            currency: "LKR",
+            firstName: "Joe",
+            lastName: "Kate",
+            email: "webivox@gmail.com",
+            mobile: "0777904054",
+          });
+
+          if (res.data.success) {
+            const { actionUrl, formFields } = res.data;
+
+            const form = document.createElement("form");
+            form.method = "POST";
+            form.action = actionUrl;
+
+            Object.entries(formFields).forEach(([key, value]) => {
+              const input = document.createElement("input");
+              input.type = "hidden";
+              input.name = key;
+              input.value = value;
+              form.appendChild(input);
+            });
+
+            document.body.appendChild(form);
+            form.submit();
+          } else {
+            alert("Payment failed: " + res.data.message);
           }
-        );
-
-        if (!updateResponse.ok) {
-          const errorText = await updateResponse.text();
-          throw new Error("Failed to update order status: " + errorText);
+        } catch (err) {
+          console.error(err);
+          alert("Error creating payment");
         }
-
-        clearCart();
-
-        alert(
-          `Order placed successfully! Order ID: ${order.id}\n` +
-          `Delivery: ${form.deliveryMethod === "delivery" ? "Delivery" : "Store Pickup"}\n` +
-          `Payment: ${form.paymentMethod === "cash" ? "Cash/KOKO Pay" : "Card Payment"}\n\n` +
-          `You will receive a confirmation email shortly.`
-        );
-
-        navigate(`/payment/success?orderId=${order.id}`);
       }
     } catch (error) {
       console.error("Checkout error:", error);
@@ -373,7 +384,7 @@ export default function Checkout() {
                       className="w-full p-3 border-2 rounded-lg transition-all duration-300 ease-in-out focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       disabled={loading}
                     >
-                      <option value="cash">KOKO Pay(not update yet)</option>
+                      <option value="koko">KOKO Pay(not update yet)</option>
                       <option value="card">Card Payment (Visa/MasterCard)</option>
                     </select>
                   </div>

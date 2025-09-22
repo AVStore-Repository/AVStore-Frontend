@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../config/config";
+import axios from "axios";
 
 export default function PaymentPage() {
   const [loading, setLoading] = useState(false);
@@ -28,7 +29,7 @@ export default function PaymentPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          amount: "250.00",        
+          amount: "250.00",
           description: "Laptop Bag",
         }),
       });
@@ -58,6 +59,45 @@ export default function PaymentPage() {
     }
   };
 
+
+  const handleKOKOPay = async () => {
+    try {
+      const res = await axios.post("http://localhost:5000/api/payment/create-koko-payment", {
+        orderId: 123,
+        amount: 15000,
+        currency: "LKR",
+        firstName: "Joe",
+        lastName: "Kate",
+        email: "webivox@gmail.com",
+        mobile: "0777904054",
+      });
+
+      if (res.data.success) {
+        const { actionUrl, formFields } = res.data;
+
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = actionUrl;
+
+        Object.entries(formFields).forEach(([key, value]) => {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = key;
+          input.value = value;
+          form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+      } else {
+        alert("Payment failed: " + res.data.message);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error creating payment");
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
@@ -67,6 +107,17 @@ export default function PaymentPage() {
           disabled={loading}
         >
           {loading ? "Processing..." : "Pay Now"}
+        </button>
+        {error && <p className="text-red-500 mt-4">{error}</p>}
+      </div>
+
+      <div className="text-center m-4">
+        <button
+          onClick={handleKOKOPay}
+          className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 disabled:opacity-50"
+          disabled={loading}
+        >
+          {loading ? "Processing..." : "Pay KOKO"}
         </button>
         {error && <p className="text-red-500 mt-4">{error}</p>}
       </div>
