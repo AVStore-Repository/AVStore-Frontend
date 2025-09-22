@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BASE_URL } from "../config/config";
+import axios from "axios";
 
 export default function PaymentPage() {
   const [loading, setLoading] = useState(false);
@@ -28,7 +29,7 @@ export default function PaymentPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          amount: "250.00",        
+          amount: "250.00",
           description: "Laptop Bag",
         }),
       });
@@ -58,6 +59,28 @@ export default function PaymentPage() {
     }
   };
 
+
+  const handleKOKOPay = async () => {
+    try {
+      const amount = 1000; // Amount in cents
+      const orderId = "ORDER123";
+      const customerPhone = "0771234567";
+
+      const res = await axios.post("/api/payment/pay", {
+        amount,
+        orderId,
+        customerPhone
+      });
+
+      if (res.data.success) {
+        window.location.href = res.data.data.paymentUrl; // Redirect to Koko
+      }
+    } catch (err) {
+      console.error("Payment error:", err);
+      alert("Payment failed. Try again.");
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="text-center">
@@ -67,6 +90,17 @@ export default function PaymentPage() {
           disabled={loading}
         >
           {loading ? "Processing..." : "Pay Now"}
+        </button>
+        {error && <p className="text-red-500 mt-4">{error}</p>}
+      </div>
+
+      <div className="text-center m-4">
+        <button
+          onClick={handleKOKOPay}
+          className="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600 disabled:opacity-50"
+          disabled={loading}
+        >
+          {loading ? "Processing..." : "Pay KOKO"}
         </button>
         {error && <p className="text-red-500 mt-4">{error}</p>}
       </div>
