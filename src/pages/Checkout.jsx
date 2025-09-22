@@ -135,7 +135,7 @@ export default function Checkout() {
       } else {
         try {
           const res = await axios.post(`${BASE_URL}/payment/create-koko-payment`, {
-            orderId: order.id,
+            orderId: order.id || Math.floor(Math.random() * 1000000),
             amount: total,
             currency: "LKR",
             firstName: form.firstName,
