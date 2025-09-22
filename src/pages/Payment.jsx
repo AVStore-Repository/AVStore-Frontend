@@ -62,22 +62,39 @@ export default function PaymentPage() {
 
   const handleKOKOPay = async () => {
     try {
-      const amount = 1000; // Amount in cents
-      const orderId = "ORDER123";
-      const customerPhone = "0771234567";
-
-      const res = await axios.post("/api/payment/pay", {
-        amount,
-        orderId,
-        customerPhone
+      const res = await axios.post("http://localhost:5000/api/payment/create-koko-payment", {
+        orderId: 123,
+        amount: 15000,
+        currency: "LKR",
+        firstName: "Joe",
+        lastName: "Kate",
+        email: "webivox@gmail.com",
+        mobile: "0777904054",
       });
 
       if (res.data.success) {
-        window.location.href = res.data.data.paymentUrl; // Redirect to Koko
+        const { actionUrl, formFields } = res.data;
+
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = actionUrl;
+
+        Object.entries(formFields).forEach(([key, value]) => {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = key;
+          input.value = value;
+          form.appendChild(input);
+        });
+
+        document.body.appendChild(form);
+        form.submit();
+      } else {
+        alert("Payment failed: " + res.data.message);
       }
     } catch (err) {
-      console.error("Payment error:", err);
-      alert("Payment failed. Try again.");
+      console.error(err);
+      alert("Error creating payment");
     }
   };
 
