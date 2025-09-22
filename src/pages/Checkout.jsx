@@ -134,14 +134,14 @@ export default function Checkout() {
         }
       } else {
         try {
-          const res = await axios.post("http://localhost:5000/api/payment/create-koko-payment", {
-            orderId: 123,
-            amount: 15000,
+          const res = await axios.post(`${BASE_URL}/payment/create-koko-payment`, {
+            orderId: order.id,
+            amount: total,
             currency: "LKR",
-            firstName: "Joe",
-            lastName: "Kate",
-            email: "webivox@gmail.com",
-            mobile: "0777904054",
+            firstName: form.firstName,
+            lastName: form.lastName,
+            email: form.email,
+            mobile: form.phone,
           });
 
           if (res.data.success) {
