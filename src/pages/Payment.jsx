@@ -62,7 +62,7 @@ export default function PaymentPage() {
 
   const handleKOKOPay = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/api/payment/create-koko-payment", {
+      const res = await axios.post(`${BASE_URL}/payment/create-koko-payment`, {
         orderId: 123,
         amount: 15000,
         currency: "LKR",
