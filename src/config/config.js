@@ -7,5 +7,8 @@ const BASE_URL = "/api";
 
 
 module.exports = {
-  BASE_URL
+  BASE_URL,
+  EMAILJS_SERVICE_ID: 'service_y3yje7i',
+  EMAILJS_TEMPLATE_ID: 'template_98stugb',
+  EMAILJS_PUBLIC_KEY: '2PtarFMcBdTqcVtM5',
 };

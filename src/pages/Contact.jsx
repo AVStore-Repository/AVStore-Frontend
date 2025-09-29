@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { api, handleResponse } from '../services/api';
-import { BASE_URL } from '../config/config';
+import emailjs from '@emailjs/browser';
+// import { api, handleResponse } from '../services/api';
+import { BASE_URL, EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, EMAILJS_PUBLIC_KEY } from '../config/config';
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
@@ -18,11 +19,15 @@ export default function Contact() {
     try {
       console.log('Submitting contact form:', form);
       
-      const response = await api.submitContact(form);
-      console.log('API response:', response);
-      
-      const result = await handleResponse(response);
-      console.log('Processed result:', result);
+      const templateParams = {
+        from_name: form.name,
+        from_email: form.email,
+        message: form.message,
+        to_email: 'info.avstorelk@gmail.com' // Ensure this is the recipient email
+      };
+
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams, EMAILJS_PUBLIC_KEY);
+      console.log('EmailJS response: Email sent successfully');
       
       setSubmitStatus('success');
       setForm({ name: '', email: '', message: '' });
