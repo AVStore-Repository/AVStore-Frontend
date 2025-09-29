@@ -188,7 +188,14 @@ export default function Shop() {
             >
               <img src={p.images[0]} alt={p.name} className="w-full h-50 object-cover rounded-md mb-3" />
               <h2 className="text-lg font-semibold">{p.name}</h2>
-              <p className="mt-1 text-gray-700 text-base">{formatCurrency(p.price)}</p>
+              {p.discountPrice ? (
+                <p className="mt-1 text-gray-700 text-base flex justify-center items-center gap-2">
+                  <span className="line-through text-gray-500">{formatCurrency(p.price)}</span>
+                  <span className="font-bold text-red-600">{formatCurrency(p.discountPrice)}</span>
+                </p>
+              ) : (
+                <p className="mt-1 text-gray-700 text-base">{formatCurrency(p.price)}</p>
+              )}
               <p className="text-xs text-gray-500">{p.category}</p>
               {
                 p.stock === 0 ?
