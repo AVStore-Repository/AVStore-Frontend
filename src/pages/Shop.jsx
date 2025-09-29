@@ -14,15 +14,22 @@ const formatCurrency = (amount) => {
 
 const productCategories = [
   { name: "All Products" },
-  { name: "Mixers", subcategories: ["Analog Mixers", "Digital Mixers"] },
   {
-    name: "Microphones",
-    subcategories: ["Wired Microphones", "Wireless Microphones", "Podium Microphones"],
+    name: 'Mixers',
+    subcategories: ['Analog Mixers', 'Digital Mixers']
   },
   {
-    name: "Speakers",
-    subcategories: ["Active Speakers", "Passive Speakers", "Portable Speakers"],
+    name: 'Speakers',
+    subcategories: ['Active speaker', 'Passive speaker', 'Portable speaker']
   },
+  {
+    name: 'Microphones',
+    subcategories: ['Wired microphone', 'Wireless microphone', 'Podium microphone']
+  },
+  {
+    name: 'Amplifiers',
+    subcategories: []
+  }
 ];
 
 // ✅ Full products list with unique IDs
@@ -791,10 +798,19 @@ export default function Shop() {
     setOpenCategory(null);
   };
 
-  const filteredProducts = products.filter((p) => {
+  const filteredProducts = availableProduct.filter((p) => {
     const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
     const matchesCategory =
-      selectedCategory === "All Products" || p.category === selectedCategory;
+      selectedCategory === "All Products" ||
+      p.category.toLowerCase() === selectedCategory.toLowerCase() ||
+      productCategories.some(
+        (category) =>
+          category.name === selectedCategory &&
+          category.subcategories &&
+          category.subcategories.some(
+            (sub) => sub.toLowerCase() === p.category.toLowerCase()
+          )
+      );
     return matchesSearch && matchesCategory;
   });
 
@@ -834,7 +850,7 @@ export default function Shop() {
                   : "text-black hover:text-yellow-300"
               }`}
               onClick={() => {
-                if (category.subcategories) {
+                if (category.subcategories && category.subcategories.length > 0) {
                   setOpenCategory(openCategory === category.name ? null : category.name);
                 } else {
                   handleCategorySelect(category.name);
@@ -903,8 +919,8 @@ export default function Shop() {
 
       {/* Products grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {availableProduct.length > 0 ? (
-          availableProduct.map((p, index) => (
+        {filteredProducts.length > 0 ? (
+          filteredProducts.map((p, index) => (
             <div
               key={p.id}
               className="bg-white rounded-lg shadow-md p-4 text-center transform transition-transform duration-300 hover:scale-105"
