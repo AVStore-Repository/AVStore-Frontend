@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../context/CartContext";
 import { FaMinus, FaPlus, FaTrash, FaArrowLeft, FaShoppingBag } from "react-icons/fa";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat("en-LK", {
@@ -97,7 +99,14 @@ export default function Cart() {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => updateQuantity(item.name, 1)}
+                          onClick={() => {
+                            const currentItem = cart.find(cartItem => cartItem.name === item.name);
+                            if (currentItem && currentItem.quantity < currentItem.stock) {
+                              updateQuantity(item.name, 1);
+                            } else if (currentItem) {
+                              toast.error(`Only ${currentItem.stock} items of ${currentItem.name} are available.`);
+                            }
+                          }}
                           className="p-2 text-gray-700 hover:text-black hover:bg-gray-100 transition-colors"
                           aria-label="Increase quantity"
                         >
@@ -150,6 +159,7 @@ export default function Cart() {
           </div>
         )}
       </div>
+    <ToastContainer />
     </div>
   );
 } 
