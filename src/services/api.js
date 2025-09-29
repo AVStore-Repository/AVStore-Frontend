@@ -1,4 +1,7 @@
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://avstore.lk/api";
+import { BASE_URL } from "../config/config";
+
+
+const API_BASE_URL = BASE_URL;
 
 export const api = {
   // Auth endpoints

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import emailjs from '@emailjs/browser';
 // import { api, handleResponse } from '../services/api';
-import { BASE_URL, EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, EMAILJS_PUBLIC_KEY } from '../config/config';
+import { EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, EMAILJS_PUBLIC_KEY } from '../config/config';
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
@@ -40,19 +40,6 @@ export default function Contact() {
       alert(`Error: ${error.message || 'There was an error sending your message. Please try again.'}`);
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Test function to check API connection
-  const testApiConnection = async () => {
-    try {
-      const response = await fetch(`${BASE_URL}/health`);
-      const data = await response.json();
-      console.log('API health check:', data);
-      alert(`API connection: ${response.ok ? 'OK' : 'Failed'}\n${JSON.stringify(data)}`);
-    } catch (error) {
-      console.error('API connection test failed:', error);
-      alert(`API connection failed: ${error.message}`);
     }
   };
 
