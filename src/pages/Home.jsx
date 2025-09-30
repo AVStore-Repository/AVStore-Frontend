@@ -160,9 +160,10 @@ export default function Home() {
         {/* Hero section */}
         <section className="fade-in-section min-h-screen bg-cover bg-center bg-white flex flex-col items-center justify-start pt-40 text-black px-6">
           <h1 className="text-7xl font-bold mb-2 drop-shadow-lg">Welcome to AVSTORE</h1>
+          <h4 className="text-2xl font-bold mb-2 drop-shadow-lg">Your One-Stop shop for Professional Audio-Visual Equipment </h4>
           <p className="text-xl max-w-xl text-center drop-shadow-md mb-6">
-            Discover a wide range of premium instruments, audio gear, and studio equipment all in one place.<br />
-            Whether you're a beginner or a pro, we have got what you need to bring your music to life
+            Discover the best in Pro-AV Solutions from world leading brands in Profesional Audio visual buisness, which carries the assurance of Quality, Authencity, and Genuineness.<br />
+            Whether you’re a beginner, or a professional, we got the right solution at the right price.
           </p>
           <button
             onClick={handleShopNow}
@@ -181,9 +182,9 @@ export default function Home() {
           </div>
         </section>
 
-                {/* 3D Spinning Carousel Section */}
+        {/* 3D Spinning Carousel Section */}
         <section className="fade-in-section min-h-screen bg-cover bg-center flex flex-col items-center justify-start pt-10 text-black text px-6"
-                 style={{ backgroundImage: "url('/images/.jpg')" }}
+          style={{ backgroundImage: "url('/images/.jpg')" }}
         >
           <h2 className="text-5xl font-bold mb-12">Featured Products</h2>
           <p className="text-lg font-semibold max-w-3xl text-center drop-shadow-sm px-6 mb-10">
@@ -242,9 +243,8 @@ export default function Home() {
                     <div
                       key={product.id}
                       data-id={product.id}
-                      className={`product-card relative flex-shrink-0 w-48 h-64 bg-white bg-opacity-60 rounded-lg p-4 fade-slide-up ${
-                        isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-90'
-                      } hover:scale-105 cursor-pointer shadow-lg flex flex-col items-center scroll-snap-align-start`}
+                      className={`product-card relative flex-shrink-0 w-48 h-64 bg-white bg-opacity-60 rounded-lg p-4 fade-slide-up ${isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-90'
+                        } hover:scale-105 cursor-pointer shadow-lg flex flex-col items-center scroll-snap-align-start`}
                     >
                       <div className="relative w-full h-40 mb-4 rounded overflow-hidden">
                         <img src={product.image} alt={product.name} className="w-full h-full object-contain" />
@@ -273,7 +273,7 @@ export default function Home() {
           />
         </div>
 
-        
+
         {/* Special Deals Section */}
         <section
           className="fade-in-section min-h-screen flex flex-col md:flex-row items-center justify-center px-6 py-12 text-black"
@@ -283,7 +283,7 @@ export default function Home() {
           <div className="w-full md:w-1/2 flex justify-center mb-10 md:mb-0">
             <div className="relative max-w-sm rounded-lg overflow-hidden shadow-lg bg-gray-100">
               <img
-                src="/images/26.png"
+                src="https://res.cloudinary.com/drkm7uelu/image/upload/v1759216697/Bundle_Offer_lysgsl.png"
                 alt="B1X Speaker"
                 className="w-full h-auto object-contain"
               />
@@ -337,7 +337,7 @@ export default function Home() {
         {/* Footer Section */}
         <footer className="bg-white/70 text-black py-10 px-6 mt-16">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-            
+
             {/* Left: Logo & Description */}
             <div className="flex flex-col items-start">
               <img
@@ -370,7 +370,7 @@ export default function Home() {
               <a href="https://www.instagram.com/dynamic_av_official?igsh=Y3I4dnQwdzlmMjBt" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">
                 <img src="/images/instagram.png" alt="Instagram" className="w-9 h-9" />
               </a>
-             
+
               <a href="https://www.tiktok.com/@avstore.lk?_t=ZS-8zM28E9khOh&_r=1" target="_blank" rel="noopener noreferrer" className="hover:scale-110 transition-transform">
                 <img src="/images/tik-tok.png" alt="TikTok" className="w-9 h-9" />
               </a>
@@ -378,7 +378,7 @@ export default function Home() {
           </div>
 
           {/* Bottom Text */}
-          
+
         </footer>
       </div>
     </>

@@ -19,9 +19,14 @@ export default function AboutUs() {
       title: "About Us",
       color: "bg-gradient-to-r from-white to-gray-50 border-gray-300",
       textColor: "text-black",
-      text: "Welcome to AV Store, Sri Lanka's premier destination for high-end audio and visual equipment, crafted to elevate your sound experience. As passionate audio enthusiasts, we specialize in offering the world's finest, cutting-edge AV products, catering to audiophiles, home cinema buffs, and professional sound engineers alike. Our carefully curated selection includes premium audio equipment from globally renowned brands, ensuring impeccable sound quality, aesthetic excellence, and reliable performance for every listening space. With expert guidance and a dedication to quality, we aim to enhance your auditory journey, bringing clarity and richness to every note, beat and soundscape. powered by Dynamic AV technologies (PVT)LTD.",
-    },
+      text1: `
+      • Welcome to AV Store, Sri Lanka's premier destination for all your professional Audio equipment catering to all spectrums of the market, covering every budget from affordable to high-end.  
+      `,
+      text2:`• As passionate audio enthusiasts, we cater to audiophiles, home cinema buffs, and professional sound engineers alike.Our carefully curated selection includes premium audio equipment from globally renowned brands, ensuring impeccable sound quality, aesthetic excellence, and reliable performance for every listening space.With expert guidance and a dedication to quality, we aim to enhance your auditory journey, bringing clarity and richness to every note, beat, and soundscape… powered by Dynamic AV Technologies (Pvt.) Ltd.`
+    
+    }
   ];
+
 
   return (
     <div className="min-h-screen bg-white p-4 md:p-6 overflow-hidden relative">
@@ -58,14 +63,18 @@ export default function AboutUs() {
                 </span>
               </h2>
               <p
-                className={`text-black transition-all duration-700 text-sm md:text-base ${
-                  expanded === section.id 
-                    ? "opacity-100 translate-y-0" 
+                className={`text-black transition-all duration-700 text-sm md:text-base mb-2 ${expanded === section.id
+                    ? "opacity-100 translate-y-0"
                     : "opacity-70 translate-y-2"
-                }`}
+                  }`}
               >
-                {section.text}
+                {section.text1}
+                
               </p>
+              <p className={`text-black transition-all duration-700 text-sm md:text-base ${expanded === section.id
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-70 translate-y-2"
+                  }`}>{section.text2}</p>
             </div>
           ))}
         </div>
@@ -73,26 +82,26 @@ export default function AboutUs() {
         {/* Right Side - Image with animation */}
         <div className={`flex-1 flex justify-center w-full mt-6 md:mt-0 transform transition-all duration-1000 delay-300 ${isVisible ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'}`}>
           <div className="w-full max-w-md h-64 md:h-96 bg-gray-100 rounded-lg overflow-hidden shadow-md transform transition-transform duration-700 hover:scale-105">
-            <img 
-              src="/images/sideabout.jpg" 
-              alt="About AV Store" 
+            <img
+              src="https://res.cloudinary.com/drkm7uelu/image/upload/v1759215058/AV_Store_Red_1_inpx6c.png"
+              alt="About AV Store"
               className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
             />
           </div>
         </div>
       </div>
 
-     
 
-        
-        
+
+
+
 
 
       {/* Additional decorative elements */}
       <div className="absolute bottom-0 left-0 w-full overflow-hidden">
-        <svg 
+        <svg
           className="relative block w-full h-12 text-white"
-          viewBox="0 0 1200 120" 
+          viewBox="0 0 1200 120"
           preserveAspectRatio="none"
         >
           <path d="M0,0V6c0,21.6,291,111.46,741,110.26,445.39,3.6,459-88.3,459-110.26V0Z" className="fill-current text-gray-100"></path>
