@@ -159,15 +159,15 @@ export default function Home() {
       <div className="bg-white min-h-screen text-black">
         {/* Hero section */}
         <section className="fade-in-section min-h-screen bg-cover bg-center bg-white flex flex-col items-center justify-start pt-40 text-black px-6">
-          <h1 className="text-7xl font-bold mb-2 drop-shadow-lg">Welcome to AVSTORE</h1>
+          <h1 className="text-6xl font-bold mb-2 drop-shadow-lg">Welcome to AVSTORE</h1>
           <h4 className="text-2xl font-bold mb-2 drop-shadow-lg">Your One-Stop shop for Professional Audio-Visual Equipment </h4>
-          <p className="text-xl max-w-xl text-center drop-shadow-md mb-6">
+          <p className="text-xl max-w-2xl text-center drop-shadow-md mb-6">
             Discover the best in Pro-AV Solutions from world leading brands in Profesional Audio visual buisness, which carries the assurance of Quality, Authencity, and Genuineness.<br />
             Whether you’re a beginner, or a professional, we got the right solution at the right price.
           </p>
           <button
             onClick={handleShopNow}
-            className="mt-[50px] bg-white hover:bg-gray-400 transition-colors duration-300 text-black font-semibold py-3 px-8 rounded shadow-lg drop-shadow-md"
+            className="mt-[10px] bg-white hover:bg-gray-400 transition-colors duration-300 text-black font-semibold py-3 px-8 rounded shadow-lg drop-shadow-md"
           >
             Shop Now
           </button>
