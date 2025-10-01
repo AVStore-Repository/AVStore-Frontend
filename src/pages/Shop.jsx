@@ -29,6 +29,10 @@ const productCategories = [
   {
     name: 'Amplifiers',
     subcategories: []
+  },
+  {
+    name: 'Other',
+    subcategories: ['Studio Equipment', 'Headphones & Earphones', 'In Ear Monitors', 'Accessories']
   }
 ];
 
@@ -64,14 +68,14 @@ export default function Shop() {
     const matchesCategory =
       selectedCategory === "All Products" ||
       p.category.toLowerCase() === selectedCategory.toLowerCase() ||
-      productCategories.some(
-        (category) =>
-          category.name === selectedCategory &&
-          category.subcategories &&
-          category.subcategories.some(
+      productCategories.some((category) => {
+        if (category.name.toLowerCase() === selectedCategory.toLowerCase() && category.subcategories) {
+          return category.subcategories.some(
             (sub) => sub.toLowerCase() === p.category.toLowerCase()
-          )
-      );
+          );
+        }
+        return false;
+      });
     return matchesSearch && matchesCategory;
   });
 
