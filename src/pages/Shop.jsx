@@ -20,11 +20,11 @@ const productCategories = [
   },
   {
     name: 'Speakers',
-    subcategories: ['Active speaker', 'Passive speaker', 'Portable speaker', 'Passive Subwoofers', 'Portable Speakers', 'Column Speakers']
+    subcategories: ['Active Speakers', 'Active Subwoofers', 'Passive Speakers', 'Passive Subwoofers', 'Portable Speakers', 'Column Speakers']
   },
   {
     name: 'Microphones',
-    subcategories: ['Wired microphone', 'Wireless microphone', 'Podium microphone']
+    subcategories: ['Wired Microphones', 'Wireless Microphones', 'Podium Microphones']
   },
   {
     name: 'Amplifiers',
