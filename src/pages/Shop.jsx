@@ -20,7 +20,7 @@ const productCategories = [
   },
   {
     name: 'Speakers',
-    subcategories: ['Active speaker', 'Passive speaker', 'Portable speaker']
+    subcategories: ['Active speaker', 'Passive speaker', 'Portable speaker', 'Passive Subwoofers', 'Portable Speakers', 'Column Speakers']
   },
   {
     name: 'Microphones',
