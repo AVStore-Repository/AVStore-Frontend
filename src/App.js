@@ -14,6 +14,8 @@ import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentFailed from './pages/PaymentFailed';
 import PaymentResponseHandler from './pages/PaymentResponseHandler';
 import PaymentPage from './pages/Payment';
+import SignInForm from './pages/Login';
+import SignUpPopup from './pages/SignUp';
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
             <Route path="/payment/failed" element={<PaymentFailed />} />
             <Route path="/payment/response" element={<PaymentResponseHandler />} />
             <Route path="/payment" element={<PaymentPage />} />
+            <Route path="/login" element={<SignInForm />} />
+            <Route path="/signup" element={<SignUpPopup />} />
           </Routes>
         </main>   
         <Footer />
