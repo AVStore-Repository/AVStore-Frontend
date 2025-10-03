@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Eye, EyeOff, Lock, Mail, X } from 'lucide-react';
+import axios from 'axios';
+import { BASE_URL } from '../config/config';
 
 export default function SignUpPopup() {
   const [isOpen, setIsOpen] = useState(true);
@@ -10,7 +12,7 @@ export default function SignUpPopup() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
@@ -28,12 +30,18 @@ export default function SignUpPopup() {
       return;
     }
 
-    // Simulate login process
-    setTimeout(() => {
-      setIsLoading(false);
-      alert(`Login successful!\nEmail: ${email}\nRemember Me: ${rememberMe}`);
+
+    const response = await axios.post(`${BASE_URL}/auth/register`, { email, password });
+
+    if (response.status === 200) {
+      alert(`Signup successful!\nEmail: ${email}\nRemember Me: ${rememberMe}`);
+      setError('');
       setIsOpen(false);
-    }, 1500);
+      window.location.href = '/login';
+    } else {
+      setError(response.data.message);
+      setIsLoading(false);
+    }
   };
 
   const handleClose = () => {
