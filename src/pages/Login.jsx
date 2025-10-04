@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Eye, EyeOff, Lock, Mail, X } from 'lucide-react';
+import axios from 'axios';
+import { BASE_URL } from '../config/config';
+import { useNavigate } from 'react-router-dom';
 
 export default function SignInPopup() {
   const [isOpen, setIsOpen] = useState(true);
@@ -9,32 +12,52 @@ export default function SignInPopup() {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setIsLoading(true);
 
-    // Basic validation
     if (!email || !password) {
-      setError('Please fill in all fields');
+      setError("Please fill in all fields");
       setIsLoading(false);
       return;
     }
 
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setError('Please enter a valid email address');
+      setError("Please enter a valid email address");
       setIsLoading(false);
       return;
     }
 
-    // Simulate login process
-    setTimeout(() => {
+    try {
+      const response = await axios.post(`${BASE_URL}/auth/login`, {
+        email,
+        password,
+      });
+
+      const { token, user } = response.data;
+
+      localStorage.setItem("token", token);
+
+      localStorage.setItem("user", JSON.stringify(user));
+
       setIsLoading(false);
-      alert(`Login successful!\nEmail: ${email}\nRemember Me: ${rememberMe}`);
       setIsOpen(false);
-    }, 1500);
+
+      navigate("/");
+
+    } catch (err) {
+      setIsLoading(false);
+      if (err.response && err.response.data.error) {
+        setError(err.response.data.error);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    }
   };
+
 
   const handleClose = () => {
     setIsOpen(false);

@@ -77,6 +77,17 @@ export default function Checkout() {
     setError("");
 
     try {
+      const token = localStorage.getItem("token"); // get JWT token
+
+      console.log(token);
+      
+
+      if (!token) {
+        alert("You must be logged in to place an order.");
+        navigate("/login"); // redirect to login
+        return;
+      }
+
       const orderData = {
         customer: form,
         items: cart,
@@ -91,7 +102,7 @@ export default function Checkout() {
         `${BASE_URL}/orders`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
           body: JSON.stringify(orderData),
         }
       );

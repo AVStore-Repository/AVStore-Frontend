@@ -3,6 +3,7 @@ import { FaShoppingCart, FaCheck } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { CartContext } from "../context/CartContext";
 import { BASE_URL } from "../config/config";
+import { useNavigate } from "react-router-dom";
 
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat("en-LK", {
@@ -44,6 +45,7 @@ export default function Shop() {
   const [selectedCategory, setSelectedCategory] = useState("All Products");
   const { cart, addToCart } = useContext(CartContext);
   const [availableProduct, setAvailableProduct] = useState([]);
+  const navigate = useNavigate();
 
   const dropdownRef = useRef();
 
@@ -91,8 +93,20 @@ export default function Shop() {
       );
       const data = await response.json();
       setAvailableProduct(data);
-      
   }
+
+  const handleAddToCart = (product) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      // No token → navigate to login
+      navigate("/login");
+      return;
+    }
+
+    // Token exists → proceed to add to cart
+    addToCart(product);
+  };
 
   useEffect(()=>{
      getAvailableProduct();
@@ -210,7 +224,7 @@ export default function Shop() {
 
               <div className="flex justify-center gap-3 mt-3">
                 <button
-                  onClick={() => addToCart(p)}
+                  onClick={() => handleAddToCart(p)}
                   className="bg-gray-200/70 p-2 rounded-full hover:bg-gray-300/70 transition-colors"
                 >
                   {cart.some((item) => item.name === p.name) ? (

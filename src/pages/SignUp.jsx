@@ -16,33 +16,42 @@ export default function SignUpPopup() {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-
+  
     // Basic validation
     if (!email || !password) {
       setError('Please fill in all fields');
       setIsLoading(false);
       return;
     }
-
+  
     if (!/\S+@\S+\.\S+/.test(email)) {
       setError('Please enter a valid email address');
       setIsLoading(false);
       return;
     }
-
-
-    const response = await axios.post(`${BASE_URL}/auth/register`, { email, password });
-
-    if (response.status === 200) {
-      alert(`Signup successful!\nEmail: ${email}\nRemember Me: ${rememberMe}`);
-      setError('');
-      setIsOpen(false);
-      window.location.href = '/login';
-    } else {
-      setError(response.data.message);
+  
+    try {
+      const response = await axios.post(`${BASE_URL}/auth/register`, { email, password });
+  
+      if (response.status === 201) { 
+        alert(`Signup successful!\nEmail: ${email}\nRemember Me: ${rememberMe}`);
+        setError('');
+        setIsOpen(false);
+        window.location.href = '/login';
+      }
+    } catch (err) {
+      if (err.response && err.response.data && err.response.data.error) {
+        alert(`Signup failed: ${err.response.data.error}`);
+        setError(err.response.data.error);
+      } else {
+        alert('Signup failed: Something went wrong');
+        setError('Something went wrong');
+      }
+    } finally {
       setIsLoading(false);
     }
   };
+  
 
   const handleClose = () => {
     setIsOpen(false);
