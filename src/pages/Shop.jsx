@@ -1,9 +1,10 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { FaShoppingCart, FaCheck } from "react-icons/fa";
+import { FaShoppingCart, FaCheck, FaTag } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { CartContext } from "../context/CartContext";
 import { BASE_URL } from "../config/config";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat("en-LK", {
@@ -37,7 +38,6 @@ const productCategories = [
   }
 ];
 
-
 export default function Shop() {
   const [search, setSearch] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -47,7 +47,54 @@ export default function Shop() {
   const [availableProduct, setAvailableProduct] = useState([]);
   const navigate = useNavigate();
 
+  // Promo code states
+  const [showPromoModal, setShowPromoModal] = useState(false);
+  const [currentPromoProduct, setCurrentPromoProduct] = useState(null);
+  const [enteredPromoCode, setEnteredPromoCode] = useState("");
+  const [appliedPromos, setAppliedPromos] = useState({});
+  const [promoError, setPromoError] = useState("");
+  const [loadingPromos, setLoadingPromos] = useState(true);
+
   const dropdownRef = useRef();
+
+  // Fetch applied promos from backend on mount
+  useEffect(() => {
+    const fetchAppliedPromos = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setLoadingPromos(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get(`${BASE_URL}/auth/user-promocodes`, {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          }
+        });
+
+        if (response.data && response.data.promos) {
+          // Convert array to object for easy lookup: { productId: { code, appliedAt, discount } }
+          const promosObj = {};
+          response.data.promos.forEach(promo => {
+            promosObj[promo.productId] = {
+              code: promo.promoCode,
+              appliedAt: promo.appliedAt,
+              discount: promo.discount || 0
+            };
+          });
+          setAppliedPromos(promosObj);
+        }
+      } catch (error) {
+        console.error("Error fetching applied promos:", error);
+      } finally {
+        setLoadingPromos(false);
+      }
+    };
+
+    fetchAppliedPromos();
+  }, []);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -81,40 +128,143 @@ export default function Shop() {
     return matchesSearch && matchesCategory;
   });
 
-  const getAvailableProduct = async ()=>{
-     const response = await fetch(
-        `${BASE_URL}/products/`, 
-        {
-          method: "GET",
-          headers: { 
-            "Content-Type": "application/json",
-          }
+  const getAvailableProduct = async () => {
+    const response = await fetch(
+      `${BASE_URL}/products/`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
         }
-      );
-      const data = await response.json();
-      setAvailableProduct(data);
+      }
+    );
+    const data = await response.json();
+    setAvailableProduct(data);
   }
+
+  const calculateDiscountedPrice = (product, discount) => {
+    if (discount) {
+      const discountAmount = (product.price * discount) / 100;
+      return product.price - discountAmount;
+    }
+    return product.price;
+  };
 
   const handleAddToCart = (product) => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      // No token → navigate to login
       navigate("/login");
       return;
     }
 
-    // Token exists → proceed to add to cart
-    addToCart(product);
+    // Check if promo was applied to this product
+    const appliedPromo = appliedPromos[product.id];
+    
+    if (appliedPromo) {
+      // User already used promo - add at discounted price
+      const discountedPrice = calculateDiscountedPrice(product, appliedPromo.discount);
+      addToCart({
+        ...product,
+        price: discountedPrice,
+        appliedPromoCode: appliedPromo.code,
+        promoDiscount: appliedPromo.discount,
+        originalPrice: product.price
+      });
+    } else {
+      // No promo used - add at regular price (could be discountPrice if available)
+      addToCart({
+        ...product,
+        price: product.discountPrice || product.price,
+        appliedPromoCode: null,
+        promoDiscount: null,
+        originalPrice: null
+      });
+    }
   };
 
-  useEffect(()=>{
-     getAvailableProduct();
-  },[])
-  
+  const openPromoModal = (product) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
 
-  console.log(availableProduct);
+    setCurrentPromoProduct(product);
+    setShowPromoModal(true);
+    setEnteredPromoCode("");
+    setPromoError("");
+  };
+
+  const closePromoModal = () => {
+    setShowPromoModal(false);
+    setCurrentPromoProduct(null);
+    setEnteredPromoCode("");
+    setPromoError("");
+  };
+
+  const handleApplyPromo = async () => {
+    if (!currentPromoProduct) return;
   
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+  
+    // Check if promo code matches
+    if (enteredPromoCode.toUpperCase() !== currentPromoProduct.promoCode) {
+      setPromoError("Invalid promo code. Please try again.");
+      return;
+    }
+  
+    // Check if user already applied this promo code locally
+    if (appliedPromos[currentPromoProduct.id]) {
+      setPromoError("You have already applied a promo code to this product.");
+      return;
+    }
+  
+    // Update local state with applied promo including discount percentage - ONLY for this specific product
+    const newAppliedPromos = {
+      ...appliedPromos,
+      [currentPromoProduct.id]: {
+        code: enteredPromoCode.toUpperCase(),
+        appliedAt: new Date().toISOString(),
+        discount: currentPromoProduct.promoDiscount
+      },
+    };
+    setAppliedPromos(newAppliedPromos);
+
+    // Calculate discounted price and add to cart immediately
+    const discountedPrice = calculateDiscountedPrice(currentPromoProduct, currentPromoProduct.promoDiscount);
+    addToCart({
+      ...currentPromoProduct,
+      price: discountedPrice,
+      appliedPromoCode: enteredPromoCode.toUpperCase(),
+      promoDiscount: currentPromoProduct.promoDiscount,
+      originalPrice: currentPromoProduct.price
+    });
+
+    // Close modal and show success message
+    closePromoModal();
+    alert(`Promo code applied! You saved ${currentPromoProduct.promoDiscount || 0}%. Product added to cart with discount.`);
+  };
+
+  const getDisplayPrice = (product) => {
+    // If user already applied promo, show discounted price
+    if (appliedPromos[product.id]) {
+      return calculateDiscountedPrice(product, appliedPromos[product.id].discount);
+    }
+    return product.discountPrice || product.price;
+  };
+
+  const isPromoApplied = (productId) => {
+    return appliedPromos[productId] !== undefined;
+  };
+
+  useEffect(() => {
+    getAvailableProduct();
+  }, [])
 
   return (
     <div className="min-h-screen bg-cover bg-center bg-no-repeat p-6 relative">
@@ -123,11 +273,10 @@ export default function Shop() {
         {productCategories.map((category) => (
           <div key={category.name} className="relative w-auto">
             <button
-              className={`text-lg font-medium flex items-center gap-1 transition-colors px-2 py-1 rounded ${
-                selectedCategory === category.name
+              className={`text-lg font-medium flex items-center gap-1 transition-colors px-2 py-1 rounded ${selectedCategory === category.name
                   ? "text-yellow-400 underline"
                   : "text-black hover:text-yellow-300"
-              }`}
+                }`}
               onClick={() => {
                 if (category.subcategories && category.subcategories.length > 0) {
                   setOpenCategory(openCategory === category.name ? null : category.name);
@@ -139,9 +288,8 @@ export default function Shop() {
               {category.name}
               {category.subcategories && (
                 <span
-                  className={`text-xs inline-block transition-transform duration-300 ${
-                    openCategory === category.name ? "rotate-180" : "rotate-0"
-                  }`}
+                  className={`text-xs inline-block transition-transform duration-300 ${openCategory === category.name ? "rotate-180" : "rotate-0"
+                    }`}
                 >
                   ▼
                 </span>
@@ -154,9 +302,8 @@ export default function Shop() {
                   <button
                     key={subcategory}
                     onClick={() => handleCategorySelect(subcategory)}
-                    className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${
-                      selectedCategory === subcategory ? "bg-blue-100 font-medium" : ""
-                    }`}
+                    className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${selectedCategory === subcategory ? "bg-blue-100 font-medium" : ""
+                      }`}
                   >
                     {subcategory}
                   </button>
@@ -196,53 +343,109 @@ export default function Shop() {
         </div>
       )}
 
+      {/* Loading state
+      {loadingPromos && (
+        <div className="text-center text-gray-600 mb-4">
+          <p>Loading promo codes...</p>
+        </div>
+      )} */}
+
       {/* Products grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {filteredProducts.length > 0 ? (
-          filteredProducts.map((p, index) => (
-            <div
-              key={p.id}
-              className="bg-white rounded-lg shadow-md p-4 text-center transform transition-transform duration-300 hover:scale-105"
-            >
-              <img src={p.images[0]} alt={p.name} className="w-full h-50 object-cover rounded-md mb-3" />
-              <h2 className="text-lg font-semibold">{p.name}</h2>
-              {p.discountPrice ? (
-                <p className="mt-1 text-gray-700 text-base flex justify-center items-center gap-2">
-                  <span className="line-through text-gray-500">{formatCurrency(p.price)}</span>
-                  <span className="font-bold text-red-600">{formatCurrency(p.discountPrice)}</span>
-                </p>
-              ) : (
-                <p className="mt-1 text-gray-700 text-base">{formatCurrency(p.price)}</p>
-              )}
-              <p className="text-xs text-gray-500">{p.category}</p>
-              {
-                p.stock === 0 ?
-                  <p className="text-xs text-red-500">Out of Stock</p> : p.stock <= 5 ?
-                    <p className="text-xs text-orange-500">Low Stock ({p.stock} items left)</p> :
-                    <p className="text-xs text-green-500">In Stock</p>
-              }
+          filteredProducts.map((p) => {
+            const displayPrice = getDisplayPrice(p);
+            const hasPromo = p.promoCode && p.promoDiscount;
+            const promoApplied = isPromoApplied(p.id);
+            const promoInfo = appliedPromos[p.id];
+            const promoDiscountedPrice = promoApplied && promoInfo ? calculateDiscountedPrice(p, promoInfo.discount) : null;
 
-              <div className="flex justify-center gap-3 mt-3">
-                <button
-                  onClick={() => handleAddToCart(p)}
-                  className="bg-gray-200/70 p-2 rounded-full hover:bg-gray-300/70 transition-colors"
-                >
-                  {cart.some((item) => item.name === p.name) ? (
-                    <FaCheck className="text-green-600 text-lg" />
-                  ) : (
-                    <FaShoppingCart className="text-black text-lg" />
-                  )}
-                </button>
+            return (
+              <div
+                key={p.id}
+                className="bg-white rounded-lg shadow-md p-4 text-center transform transition-transform duration-300 hover:scale-105 relative"
+              >
+                {hasPromo && !promoApplied && (
+                  <div className="absolute top-2 right-2 bg-purple-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                    <FaTag size={10} />
+                    {p.promoDiscount}% OFF
+                  </div>
+                )}
+                {promoApplied && (
+                  <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                    Already Applied
+                  </div>
+                )}
 
-                <button
-                  onClick={() => setSelectedProduct(p)}
-                  className="bg-blue-500/90 text-white px-3 py-1 rounded-lg hover:bg-blue-400/90 transition-colors text-sm"
-                >
-                  Details
-                </button>
+                <img src={p.images[0]} alt={p.name} className="w-full h-50 object-cover rounded-md mb-3" />
+                <h2 className="text-lg font-semibold">{p.name}</h2>
+
+                {/* Price Display Logic */}
+                {promoApplied && promoDiscountedPrice ? (
+                  // Case 1: Promo already applied - show original with strikethrough and discounted price in purple
+                  <p className="mt-1 text-gray-700 text-base flex justify-center items-center gap-2">
+                    <span className="text-gray-500">{formatCurrency(p.price)}</span>
+                  </p>
+                ) : p.discountPrice ? (
+                  // Case 2: Has regular discount - show original with strikethrough and discount price
+                  <p className="mt-1 text-gray-700 text-base flex justify-center items-center gap-2">
+                    <span className="line-through text-gray-500">{formatCurrency(p.price)}</span>
+                    <span className="font-bold text-red-600">{formatCurrency(p.discountPrice)}</span>
+                  </p>
+                ) : (
+                  // Case 3: No discount - show regular price
+                  <p className="mt-1 text-gray-700 text-base">{formatCurrency(p.price)}</p>
+                )}
+
+                {promoApplied && (
+                  <p className="text-xs text-green-600 mt-1 font-medium">
+                    You Already Applied Promo Code!
+                  </p>
+                )}
+
+                <p className="text-xs text-gray-500">{p.category}</p>
+                {
+                  p.stock === 0 ?
+                    <p className="text-xs text-red-500">Out of Stock</p> : p.stock <= 5 ?
+                      <p className="text-xs text-orange-500">Low Stock ({p.stock} items left)</p> :
+                      <p className="text-xs text-green-500">In Stock</p>
+                }
+
+                {/* Promo Code Button - Only show if promo hasn't been used */}
+                {hasPromo && !promoApplied && (
+                  <button
+                    onClick={() => openPromoModal(p)}
+                    className="w-full mt-2 bg-purple-500 text-white px-3 py-2 rounded-lg hover:bg-purple-600 transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                    disabled={loadingPromos}
+                  >
+                    <FaTag size={12} />
+                    Apply Promo Code
+                  </button>
+                )}
+
+                <div className="flex justify-center gap-3 mt-3">
+                  <button
+                    onClick={() => handleAddToCart(p)}
+                    className="bg-gray-200/70 p-2 rounded-full hover:bg-gray-300/70 transition-colors"
+                    disabled={p.stock === 0}
+                  >
+                    {cart.some((item) => item.name === p.name) ? (
+                      <FaCheck className="text-green-600 text-lg" />
+                    ) : (
+                      <FaShoppingCart className="text-black text-lg" />
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => setSelectedProduct(p)}
+                    className="bg-blue-500/90 text-white px-3 py-1 rounded-lg hover:bg-blue-400/90 transition-colors text-sm"
+                  >
+                    Details
+                  </button>
+                </div>
               </div>
-            </div>
-          ))
+            );
+          })
         ) : (
           <div className="col-span-3 text-center text-gray-700 py-10">
             <p className="text-xl mb-2">No products found</p>
@@ -260,6 +463,87 @@ export default function Shop() {
           </div>
         )}
       </div>
+
+      {/* Promo Code Modal */}
+      {showPromoModal && currentPromoProduct && (
+        <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-fadeIn">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                <FaTag className="text-purple-500" />
+                Apply Promo Code
+              </h2>
+              <button onClick={closePromoModal} className="text-gray-500 hover:text-gray-700">
+                <IoMdClose size={24} />
+              </button>
+            </div>
+
+            <div className="mb-4">
+              <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-4 mb-4">
+                <p className="text-sm text-purple-800 font-medium">Save {currentPromoProduct.promoDiscount}% with promo code!</p>
+                <p className="text-lg font-bold text-purple-600 mt-1">
+                  New Price: {formatCurrency(calculateDiscountedPrice(currentPromoProduct, currentPromoProduct.promoDiscount))}
+                </p>
+              </div>
+
+              {/* Available Promo Code Display */}
+              <div className="bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg p-4 mb-4 text-center">
+                <p className="text-white text-sm font-medium mb-2">Available Promo Code</p>
+                <div className="bg-white rounded-lg py-3 px-4 inline-block">
+                  <p className="text-2xl font-bold text-purple-600 tracking-wider">{currentPromoProduct.promoCode}</p>
+                </div>
+                <p className="text-white text-xs mt-2 opacity-90">Copy and use this code below</p>
+              </div>
+
+              <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 mb-4">
+                <p className="text-yellow-800 text-xs font-medium">
+                  ⚠️ Note: Promo codes can only be used once per product. After using this code, you can still purchase this product but at the regular price.
+                </p>
+              </div>
+
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Enter Promo Code
+              </label>
+              <input
+                type="text"
+                value={enteredPromoCode}
+                onChange={(e) => {
+                  setEnteredPromoCode(e.target.value.toUpperCase());
+                  setPromoError("");
+                }}
+                placeholder="Enter code here"
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-4 focus:ring-purple-100 focus:border-purple-500 transition-all uppercase text-center text-lg font-bold"
+              />
+              {promoError && (
+                <p className="text-red-500 text-sm mt-2 flex items-center gap-1">
+                  <span>⚠</span>
+                  <span>{promoError}</span>
+                </p>
+              )}
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={closePromoModal}
+                className="flex-1 px-4 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleApplyPromo}
+                disabled={!enteredPromoCode.trim()}
+                className={`flex-1 px-4 py-3 rounded-lg font-medium transition-colors ${
+                  enteredPromoCode.trim()
+                    ? 'bg-purple-500 text-white hover:bg-purple-600'
+                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                }`}
+              >
+                Apply Code
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Product details modal */}
       {selectedProduct && (
@@ -285,7 +569,23 @@ export default function Shop() {
 
             <p className="text-gray-700 mb-2">{selectedProduct.description}</p>
             <p className="text-gray-600 mb-4">Category: {selectedProduct.category}</p>
-            <p className="font-bold text-lg mb-6">{formatCurrency(selectedProduct.price)}</p>
+            <p className="font-bold text-lg mb-6">{formatCurrency(getDisplayPrice(selectedProduct))}</p>
+
+            {selectedProduct.promoCode && !isPromoApplied(selectedProduct.id) && (
+              <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 mb-4">
+                <p className="text-sm text-purple-800 font-medium">
+                  Special offer available! Use promo code to save {selectedProduct.promoDiscount}%
+                </p>
+              </div>
+            )}
+
+            {isPromoApplied(selectedProduct.id) && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                <p className="text-sm text-green-700 font-medium">
+                  You have applied a {appliedPromos[selectedProduct.id]?.discount}% promo discount to this product!
+                </p>
+              </div>
+            )}
 
             <button
               onClick={() => setSelectedProduct(null)}

@@ -18,6 +18,10 @@ export default function Checkout() {
     zipCode: "00100",
     paymentMethod: "cash",
     deliveryMethod: "",
+    promoCodeList: cart.map((item) => ({
+      productId: item.id,             // Product ID from cart
+      promoCode: item.promoCode || "" // Promo code, empty string if none
+    })),
   });
 
   const [loading, setLoading] = useState(false);
@@ -35,6 +39,10 @@ export default function Checkout() {
       currency: "LKR",
       minimumFractionDigits: 2,
     }).format(amount);
+
+
+  console.log(cart);
+
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
@@ -77,14 +85,14 @@ export default function Checkout() {
     setError("");
 
     try {
-      const token = localStorage.getItem("token"); // get JWT token
+      const token = localStorage.getItem("token");
 
       console.log(token);
-      
+
 
       if (!token) {
         alert("You must be logged in to place an order.");
-        navigate("/login"); // redirect to login
+        navigate("/login");
         return;
       }
 
@@ -114,6 +122,36 @@ export default function Checkout() {
 
       const order = await orderResponse.json();
       console.log("Order created:", order.id);
+
+
+      if (form.promoCodeList?.length) {
+        const userPromos = {
+          promos: form.promoCodeList.map(item => ({
+            productId: item.productId,
+            promoCode: item.promoCode.trim().toUpperCase(),
+          })),
+        };
+
+        try {
+          const promoResponse = await fetch(`${BASE_URL}/auth/apply-promocode`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify(userPromos),
+          });
+
+          const promoData = await promoResponse.json();
+          if (!promoResponse.ok) {
+            console.warn("Promo code(s) not applied:", promoData.error);
+          } else {
+            console.log("Promo code(s) applied:", promoData);
+          }
+        } catch (err) {
+          console.error("Error applying promo codes:", err);
+        }
+      }
 
       if (form.paymentMethod === "card") {
         // Create session for Seylan Bank

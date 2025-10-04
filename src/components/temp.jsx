@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaBars, FaTimes } from 'react-icons/fa';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
+  const handleLogout = () => {
+    localStorage.clear(); // or localStorage.removeItem("token") if you only want to remove the token
+    navigate("/"); // navigate to home page
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -14,9 +21,9 @@ export default function Navbar() {
       <div className="container mx-auto flex justify-between items-center h-full px-4">
         {/* Logo on the left */}
         <Link to="/home" className="flex items-center">
-          <img 
+          <img
             src="/images/dlogo.png"
-            alt="AVSTORE Logo" 
+            alt="AVSTORE Logo"
             className="h-12 w-auto object-contain mr-2"
           />
           <span className="text-xl font-bold text-black"></span>
@@ -28,7 +35,29 @@ export default function Navbar() {
           <li><Link to="/shop" className="hover:text-yellow-400 text-black font-semibold text-lg">Shop</Link></li>
           <li><Link to="/about" className="hover:text-yellow-400 text-black font-semibold text-lg">About Us</Link></li>
           <li><Link to="/contact" className="hover:text-yellow-400 text-black font-semibold text-lg">Contact</Link></li>
-          <li><Link to="/login" className="hover:text-yellow-400 text-black font-semibold text-lg">Login</Link></li>
+          <ul>
+            {token ? (
+              <li>
+                <button
+                  onClick={handleLogout}
+                  className="hover:text-yellow-400 text-black font-semibold text-lg"
+                >
+                  Logout
+                </button>
+              </li>
+            ) : (
+              <li>
+                <Link
+                  to="/login"
+                  className="hover:text-yellow-400 text-black font-semibold text-lg"
+                >
+                  Login
+                </Link>
+              </li>
+            )}
+          </ul>
+
+
           <li>
             <Link to="/cart" className="hover:text-yellow-400 text-black font-semibold">
               <FaShoppingCart className="text-xl" />
@@ -41,7 +70,7 @@ export default function Navbar() {
           <Link to="/cart" className="hover:text-yellow-400 text-black font-semibold mr-4">
             <FaShoppingCart className="text-xl" />
           </Link>
-          <button 
+          <button
             onClick={toggleMenu}
             className="text-black text-2xl focus:outline-none"
           >
