@@ -386,18 +386,17 @@ export default function Shop() {
 
                 {/* Koko Installment Badge */}
                 {hasInstallment && (
-                  <div className="mt-2 mb-2 bg-gradient-to-r to-emerald-50 border border-green-200 rounded-lg p-2">
-                    <div className="flex items-center justify-center gap-2 text-green-700 mb-1">
+                  <div className="mt-2 rounded-lg p-2">
+                    <p className="text-xs text-green-800 font-semibold">
+                      or with {p.kokoInstallmentCount} installments of {formatCurrency(p.kokoInstallmentPrice)}
+                    </p>
+                    <div className="flex items-center justify-center gap-2 text-green-700 mb-0">
                       <img
                         src="https://www.seylan.lk/uploads/KOKO.jpg"
                         alt="Koko Payment"
-                        className="h-6 w-auto object-contain"
+                        className="h-8 w-auto object-contain"
                       />
-                      <span className="text-xs font-bold">Payment Available</span>
                     </div>
-                    <p className="text-xs text-green-800 font-semibold">
-                      {formatCurrency(p.kokoInstallmentPrice)} × {p.kokoInstallmentCount} payments
-                    </p>
                   </div>
                 )}
 
@@ -530,8 +529,8 @@ export default function Shop() {
                 onClick={handleApplyPromo}
                 disabled={!enteredPromoCode.trim()}
                 className={`flex-1 px-4 py-3 rounded-lg font-medium transition-colors ${enteredPromoCode.trim()
-                    ? 'bg-purple-500 text-white hover:bg-purple-600'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ? 'bg-purple-500 text-white hover:bg-purple-600'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
                   }`}
               >
                 Apply Code
