@@ -70,7 +70,7 @@ export default function Checkout() {
   useEffect(() => {
     const script = document.createElement("script");
     script.src =
-      "https://test-seylan.mtf.gateway.mastercard.com/static/checkout/checkout.min.js";
+      "https://seylan.gateway.mastercard.com/static/checkout/checkout.min.js";
     script.async = true;
     document.body.appendChild(script);
 
