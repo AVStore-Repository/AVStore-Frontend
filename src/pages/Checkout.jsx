@@ -433,7 +433,7 @@ export default function Checkout() {
                       className="w-full p-3 border-2 rounded-lg transition-all duration-300 ease-in-out focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       disabled={loading}
                     >
-                      <option value="koko">KOKO Pay(not update yet)</option>
+                      <option value="koko">KOKO Pay</option>
                       <option value="card">Card Payment (Visa/MasterCard)</option>
                     </select>
                   </div>
