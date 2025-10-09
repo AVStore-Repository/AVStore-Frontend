@@ -159,7 +159,7 @@ export default function Home() {
       <div className="bg-white min-h-screen text-black">
         {/* Hero section */}
         <section className="fade-in-section min-h-screen bg-cover bg-center bg-white flex flex-col items-center justify-start pt-40 text-black px-6">
-          <h1 className="text-6xl font-bold mb-2 drop-shadow-lg">Welcome to AVSTORE</h1>
+          <h1 className="text-6xl font-bold mb-2 drop-shadow-lg">Welcome to AVSTO</h1>
           <h4 className="text-2xl font-bold mb-2 drop-shadow-lg">Your One-Stop shop for Professional Audio-Visual Equipment </h4>
           <p className="text-xl max-w-2xl text-center drop-shadow-md mb-6">
             Discover the best in Pro-AV Solutions from world leading brands in Profesional Audio visual buisness, which carries the assurance of Quality, Authencity, and Genuineness.<br />
