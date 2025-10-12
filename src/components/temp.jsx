@@ -156,16 +156,16 @@ export default function Navbar() {
         <div className="md:hidden fixed top-20 right-4 w-48 bg-white rounded-lg shadow-lg py-2 border border-gray-200 z-50">
           {token ? (
             <>
-              <Link
-                to="/profile"
+              <button
+                // to="/profile"
                 className="block px-4 py-2 text-gray-800 hover:text-black transition-colors"
-                onClick={() =>{
-                   setIsProfileOpen(false)
+                onClick={() => {
+                  setIsProfileOpen(false)
                   navigate("/profile")
                 }}
               >
                 Profile
-              </Link>
+              </button>
               <button
                 onClick={handleLogout}
                 className="w-full text-left px-4 py-2 text-gray-800 hover:text-black transition-colors"
@@ -175,8 +175,8 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link
-                to="/login"
+              <button
+                // to="/login"
                 className="block px-4 py-2 text-gray-800 hover:text-black transition-colors"
                 onClick={() => {
                   setIsProfileOpen(false);
@@ -184,9 +184,9 @@ export default function Navbar() {
                 }}
               >
                 Sign In
-              </Link>
-              <Link
-                to="/signup"
+              </button>
+              <button
+                // to="/signup"
                 className="block px-4 py-2 text-gray-800 hover:text-black transition-colors"
                 onClick={() => {
                   setIsProfileOpen(false);
@@ -194,7 +194,7 @@ export default function Navbar() {
                 }}
               >
                 Sign Up
-              </Link>
+              </button>
             </>
           )}
         </div>
