@@ -93,13 +93,13 @@ export default function Navbar() {
                   </>
                 ) : (
                   <>
-                    <Link
+                    {/* <Link
                       to="/profile"
                       className="block px-4 py-2 text-gray-800  hover:text-black transition-colors"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       Profile
-                    </Link>
+                    </Link> */}
                     <Link
                       to="/login"
                       className="block px-4 py-2 text-gray-800  hover:text-black transition-colors"
@@ -153,18 +153,19 @@ export default function Navbar() {
 
       {/* Mobile Profile Dropdown */}
       {isProfileOpen && (
-        <div className="md:hidden absolute top-20 right-4 w-48 bg-white rounded-lg shadow-lg py-2 border border-gray-200 z-50">
+        <div className="md:hidden fixed top-20 right-4 w-48 bg-white rounded-lg shadow-lg py-2 border border-gray-200 z-50">
           {token ? (
             <>
-
               <Link
                 to="/profile"
-                className="block px-4 py-2 text-gray-800  hover:text-black transition-colors"
-                onClick={() => setIsProfileOpen(false)}
+                className="block px-4 py-2 text-gray-800 hover:text-black transition-colors"
+                onClick={() =>{
+                   setIsProfileOpen(false)
+                  navigate("/profile")
+                }}
               >
                 Profile
               </Link>
-
               <button
                 onClick={handleLogout}
                 className="w-full text-left px-4 py-2 text-gray-800 hover:text-black transition-colors"
@@ -175,23 +176,22 @@ export default function Navbar() {
           ) : (
             <>
               <Link
-                to="/profile"
-                className="block px-4 py-2 text-gray-800  hover:text-black transition-colors"
-                onClick={() => setIsProfileOpen(false)}
-              >
-                Profile
-              </Link>
-              <Link
                 to="/login"
-                className="block px-4 py-2 text-gray-800  hover:text-black transition-colors"
-                onClick={() => setIsProfileOpen(false)}
+                className="block px-4 py-2 text-gray-800 hover:text-black transition-colors"
+                onClick={() => {
+                  setIsProfileOpen(false);
+                  navigate("/login");
+                }}
               >
                 Sign In
               </Link>
               <Link
                 to="/signup"
-                className="block px-4 py-2 text-gray-800  hover:text-black transition-colors"
-                onClick={() => setIsProfileOpen(false)}
+                className="block px-4 py-2 text-gray-800 hover:text-black transition-colors"
+                onClick={() => {
+                  setIsProfileOpen(false);
+                  navigate("/signup");
+                }}
               >
                 Sign Up
               </Link>
