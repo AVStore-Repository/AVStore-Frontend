@@ -1,18 +1,26 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaBars, FaTimes, FaUserCircle } from 'react-icons/fa';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const navigate = useNavigate();
   const profileRef = useRef(null);
-  const token = localStorage.getItem("token");
+  
+  // Simulating token - replace with your actual token logic
+  const token = typeof window !== 'undefined' ? localStorage.getItem("token") : null;
 
   const handleLogout = () => {
-    localStorage.clear();
-    navigate("/");
+    if (typeof window !== 'undefined') {
+      localStorage.clear();
+      window.location.href = "/";
+    }
     setIsProfileOpen(false);
+  };
+
+  const handleNavigation = (path) => {
+    if (typeof window !== 'undefined') {
+      window.location.href = path;
+    }
   };
 
   const toggleMenu = () => {
@@ -38,29 +46,28 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-white/5 backdrop-blur-md border-b border-white/20 shadow-md h-20">
-      <div className="container mx-auto flex justify-between items-center h-full px-4">
+    <nav className="fixed top-0 left-0 w-full z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-md">
+      <div className="container mx-auto flex justify-between items-center h-16 sm:h-20 px-3 sm:px-4">
         {/* Logo on the left */}
-        <Link to="/home" className="flex items-center">
+        <a href="/home" className="flex items-center flex-shrink-0">
           <img
             src="/images/dlogo.png"
             alt="AVSTORE Logo"
-            className="h-12 w-auto object-contain mr-2"
+            className="h-10 sm:h-12 w-auto object-contain"
           />
-          <span className="text-xl font-bold text-black"></span>
-        </Link>
+        </a>
 
         {/* Desktop Nav Links - Hidden on mobile */}
         <ul className="hidden md:flex items-center space-x-6">
-          <li><Link to="/home" className="hover:text-yellow-400 text-black font-semibold text-lg">Home</Link></li>
-          <li><Link to="/shop" className="hover:text-yellow-400 text-black font-semibold text-lg">Shop</Link></li>
-          <li><Link to="/about" className="hover:text-yellow-400 text-black font-semibold text-lg">About Us</Link></li>
-          <li><Link to="/contact" className="hover:text-yellow-400 text-black font-semibold text-lg">Contact</Link></li>
+          <li><a href="/home" className="hover:text-yellow-400 text-black font-semibold text-lg">Home</a></li>
+          <li><a href="/shop" className="hover:text-yellow-400 text-black font-semibold text-lg">Shop</a></li>
+          <li><a href="/about" className="hover:text-yellow-400 text-black font-semibold text-lg">About Us</a></li>
+          <li><a href="/contact" className="hover:text-yellow-400 text-black font-semibold text-lg">Contact</a></li>
 
           <li>
-            <Link to="/cart" className="hover:text-yellow-400 text-black font-semibold">
+            <a href="/cart" className="hover:text-yellow-400 text-black font-semibold">
               <FaShoppingCart className="text-xl" />
-            </Link>
+            </a>
           </li>
 
           {/* Profile Dropdown */}
@@ -77,43 +84,36 @@ export default function Navbar() {
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 border border-gray-200">
                 {token ? (
                   <>
-                    <Link
-                      to="/profile"
-                      className="block px-4 py-2 text-gray-800  hover:text-black transition-colors"
+                    <a
+                      href="/profile"
+                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-black transition-colors"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       Profile
-                    </Link>
+                    </a>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 text-gray-800 hover:text-black transition-colors"
+                      className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-black transition-colors"
                     >
                       Logout
                     </button>
                   </>
                 ) : (
                   <>
-                    {/* <Link
-                      to="/profile"
-                      className="block px-4 py-2 text-gray-800  hover:text-black transition-colors"
-                      onClick={() => setIsProfileOpen(false)}
-                    >
-                      Profile
-                    </Link> */}
-                    <Link
-                      to="/login"
-                      className="block px-4 py-2 text-gray-800  hover:text-black transition-colors"
+                    <a
+                      href="/login"
+                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-black transition-colors"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       Sign In
-                    </Link>
-                    <Link
-                      to="/signup"
-                      className="block px-4 py-2 text-gray-800  hover:text-black transition-colors"
+                    </a>
+                    <a
+                      href="/signup"
+                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-black transition-colors"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       Sign Up
-                    </Link>
+                    </a>
                   </>
                 )}
               </div>
@@ -122,19 +122,13 @@ export default function Navbar() {
         </ul>
 
         {/* Mobile menu button - Visible only on mobile */}
-        <div className="md:hidden flex items-center">
-          <Link to="/cart" className="hover:text-yellow-400 text-black font-semibold mr-4">
-            <FaShoppingCart className="text-xl" />
-          </Link>
-          <button
-            onClick={toggleProfile}
-            className="text-black text-2xl focus:outline-none mr-4"
-          >
-            <FaUserCircle />
-          </button>
+        <div className="md:hidden flex items-center gap-3 sm:gap-4">
+          <a href="/cart" className="hover:text-yellow-400 text-black font-semibold">
+            <FaShoppingCart className="text-lg sm:text-xl" />
+          </a>
           <button
             onClick={toggleMenu}
-            className="text-black text-2xl focus:outline-none"
+            className="text-black text-xl sm:text-2xl focus:outline-none"
           >
             {isMenuOpen ? <FaTimes /> : <FaBars />}
           </button>
@@ -142,63 +136,60 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu - Slides in from top */}
-      <div className={`md:hidden bg-white/95 backdrop-blur-md absolute top-20 left-0 w-full transition-all duration-300 ease-in-out ${isMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+      <div className={`md:hidden bg-white/95 backdrop-blur-md absolute top-16 sm:top-20 left-0 w-full transition-all duration-300 ease-in-out shadow-lg ${isMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
         <ul className="flex flex-col items-center space-y-4 py-4">
-          <li><Link to="/home" className="hover:text-yellow-400 text-black font-semibold text-lg" onClick={() => setIsMenuOpen(false)}>Home</Link></li>
-          <li><Link to="/shop" className="hover:text-yellow-400 text-black font-semibold text-lg" onClick={() => setIsMenuOpen(false)}>Shop</Link></li>
-          <li><Link to="/about" className="hover:text-yellow-400 text-black font-semibold text-lg" onClick={() => setIsMenuOpen(false)}>About Us</Link></li>
-          <li><Link to="/contact" className="hover:text-yellow-400 text-black font-semibold text-lg" onClick={() => setIsMenuOpen(false)}>Contact</Link></li>
-        </ul>
-      </div>
+          <li><a href="/home" className="hover:text-yellow-400 text-black font-semibold text-lg" onClick={() => setIsMenuOpen(false)}>Home</a></li>
+          <li><a href="/shop" className="hover:text-yellow-400 text-black font-semibold text-lg" onClick={() => setIsMenuOpen(false)}>Shop</a></li>
+          <li><a href="/about" className="hover:text-yellow-400 text-black font-semibold text-lg" onClick={() => setIsMenuOpen(false)}>About Us</a></li>
+          <li><a href="/contact" className="hover:text-yellow-400 text-black font-semibold text-lg" onClick={() => setIsMenuOpen(false)}>Contact</a></li>
 
-      {/* Mobile Profile Dropdown */}
-      {isProfileOpen && (
-        <div className="md:hidden fixed top-20 right-4 w-48 bg-white rounded-lg shadow-lg py-2 border border-gray-200 z-50">
           {token ? (
             <>
-              <button
-                // to="/profile"
-                className="block px-4 py-2 text-gray-800 hover:text-black transition-colors"
-                onClick={() => {
-                  setIsProfileOpen(false)
-                  navigate("/profile")
-                }}
-              >
-                Profile
-              </button>
-              <button
-                onClick={handleLogout}
-                className="w-full text-left px-4 py-2 text-gray-800 hover:text-black transition-colors"
-              >
-                Logout
-              </button>
+              <li>
+                <a
+                  href="/profile"
+                  className="hover:text-yellow-400 text-black font-semibold text-lg"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Profile
+                </a>
+              </li>
+              <li>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                  className="hover:text-yellow-400 text-black font-semibold text-lg"
+                >
+                  Logout
+                </button>
+              </li>
             </>
           ) : (
             <>
-              <button
-                // to="/login"
-                className="block px-4 py-2 text-gray-800 hover:text-black transition-colors"
-                onClick={() => {
-                  setIsProfileOpen(false);
-                  navigate("/login");
-                }}
-              >
-                Sign In
-              </button>
-              <button
-                // to="/signup"
-                className="block px-4 py-2 text-gray-800 hover:text-black transition-colors"
-                onClick={() => {
-                  setIsProfileOpen(false);
-                  navigate("/signup");
-                }}
-              >
-                Sign Up
-              </button>
+              <li>
+                <a
+                  href="/login"
+                  className="hover:text-yellow-400 text-black font-semibold text-lg"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Sign In
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/signup"
+                  className="hover:text-yellow-400 text-black font-semibold text-lg"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Sign Up
+                </a>
+              </li>
             </>
           )}
-        </div>
-      )}
+        </ul>
+      </div>
     </nav>
   );
 }
