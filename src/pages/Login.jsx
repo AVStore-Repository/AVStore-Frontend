@@ -167,7 +167,7 @@ export default function SignInPopup() {
                 />
                 <span className="ml-2 text-sm text-gray-600">Remember me</span>
               </label>
-              <a href="#" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
+              <a href="/resetPassword" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
                 Forgot password?
               </a>
             </div>

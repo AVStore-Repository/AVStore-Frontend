@@ -150,12 +150,12 @@ export default function Shop() {
   };
 
   const handleAddToCart = (product) => {
-    const token = localStorage.getItem("token");
+    // const token = localStorage.getItem("token");
 
-    if (!token) {
-      navigate("/login");
-      return;
-    }
+    // if (!token) {
+    //   navigate("/login");
+    //   return;
+    // }
 
     const appliedPromo = appliedPromos[product.id];
 
