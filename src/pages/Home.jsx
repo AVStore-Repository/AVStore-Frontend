@@ -211,12 +211,12 @@ export default function Home() {
       </style>
 
       <div className="bg-white min-h-screen text-black">
-        {/* Hero section - Removed min-h-screen for mobile */}
-        <section className="fade-in-section bg-cover bg-center bg-white flex flex-col items-center justify-start pt-20 sm:pt-28 md:pt-36 lg:pt-40 pb-12 sm:pb-16 md:pb-20 text-black px-4 sm:px-6">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-3 sm:mb-4 md:mb-6 drop-shadow-lg text-center tracking-tight leading-tight">
+        {/* Hero section */}
+        <section className="fade-in-section bg-cover bg-center bg-white flex flex-col items-center justify-start pt-20 sm:pt-24 md:pt-28 lg:pt-32 pb-8 sm:pb-10 md:pb-12 text-black px-4 sm:px-6">
+          <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-3 sm:mb-4 drop-shadow-lg text-center tracking-tight leading-tight max-w-full">
             Welcome to AVSTORE
           </h1>
-          <h4 className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-semibold mb-6 sm:mb-8 md:mb-10 drop-shadow-lg text-center px-2 text-gray-700 max-w-4xl leading-relaxed">
+          <h4 className="text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-semibold mb-5 sm:mb-6 md:mb-7 drop-shadow-lg text-center px-2 text-gray-700 max-w-4xl leading-relaxed">
             Your One-Stop Shop for Professional Audio-Visual Equipment
           </h4>
           <button
@@ -227,7 +227,7 @@ export default function Home() {
           </button>
 
           {/* Banner placed right under Shop Now button */}
-          <div className="mt-6 sm:mt-8 md:mt-10 lg:mt-12 w-full flex justify-center px-4">
+          <div className="mt-6 sm:mt-7 md:mt-8 w-full flex justify-center px-4">
             <img
               src="/images/Banner.png"
               alt="Promotional Banner"
@@ -236,14 +236,14 @@ export default function Home() {
           </div>
         </section>
 
-        {/* 3D Spinning Carousel Section - Reduced top padding */}
-        <section className="fade-in-section bg-cover bg-center flex flex-col items-center justify-start pt-12 sm:pt-16 md:pt-20 lg:pt-24 pb-12 sm:pb-16 md:pb-20 text-black px-4 sm:px-6"
+        {/* 3D Spinning Carousel Section */}
+        <section className="fade-in-section bg-cover bg-center flex flex-col items-center justify-start pt-10 sm:pt-12 md:pt-14 lg:pt-16 pb-10 sm:pb-12 md:pb-14 lg:pb-16 text-black px-4 sm:px-6"
           style={{ backgroundImage: "url('/images/.jpg')" }}
         >
-          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 md:mb-6 lg:mb-8 text-center leading-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 md:mb-5 text-center leading-tight">
             Featured Products
           </h2>
-          <p className="text-sm sm:text-base md:text-lg font-medium max-w-3xl text-center text-gray-700 px-4 sm:px-6 mb-6 sm:mb-8 md:mb-10 leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg font-medium max-w-3xl text-center text-gray-700 px-4 sm:px-6 mb-6 sm:mb-7 md:mb-8 leading-relaxed">
             Experience sound in its purest form. Our featured gear is engineered for the critical listener, delivering unparalleled clarity, depth, and immersive audio that reveals every nuance of your music.
           </p>
           <div className="carousel-container">
@@ -256,11 +256,11 @@ export default function Home() {
                     className="carousel-item"
                     style={{
                       '--angle': `${angle}deg`,
-                      transform: window.innerWidth < 640 
-                        ? `rotateY(${angle}deg) translateZ(200px)` 
-                        : window.innerWidth < 1024 
-                        ? `rotateY(${angle}deg) translateZ(300px)` 
-                        : `rotateY(${angle}deg) translateZ(400px)`,
+                      transform: window.innerWidth < 640
+                        ? `rotateY(${angle}deg) translateZ(200px)`
+                        : window.innerWidth < 1024
+                          ? `rotateY(${angle}deg) translateZ(300px)`
+                          : `rotateY(${angle}deg) translateZ(400px)`,
                     }}
                   >
                     <img src={product.image} alt={product.name} />
@@ -272,7 +272,7 @@ export default function Home() {
         </section>
 
         {/* Middle Banner */}
-        <div className="w-full flex justify-center my-8 sm:my-10 md:my-12 lg:my-16 px-4 sm:px-6">
+        <div className="w-full flex justify-center my-8 sm:my-10 md:my-12 px-4 sm:px-6">
           <img
             src="/images/XS1 Banner.png"
             alt="Mid Banner"
@@ -282,11 +282,11 @@ export default function Home() {
 
         {/* Special Deals Section */}
         <section
-          className="fade-in-section flex flex-col md:flex-row items-center justify-center px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20 lg:py-24 text-black"
+          className="fade-in-section flex flex-col md:flex-row items-center justify-center px-4 sm:px-6 lg:px-8 py-10 sm:py-12 md:py-14 lg:py-16 text-black"
           style={{ backgroundImage: "url('/images/deals.jpg')" }}
         >
           {/* Left side - Product Image */}
-          <div className="w-full md:w-1/2 flex justify-center mb-8 md:mb-0 md:pr-6 lg:pr-12">
+          <div className="w-full md:w-1/2 flex justify-center mb-6 sm:mb-8 md:mb-0 md:pr-6 lg:pr-10">
             <div className="relative max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg rounded-lg overflow-hidden shadow-2xl bg-gray-100">
               <img
                 src="https://res.cloudinary.com/drkm7uelu/image/upload/v1759216697/Bundle_Offer_lysgsl.png"
@@ -304,11 +304,11 @@ export default function Home() {
           </div>
 
           {/* Right side - Text and button */}
-          <div className="w-full md:w-1/2 max-w-lg md:pl-6 lg:pl-12 text-center md:text-left px-4">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-5 md:mb-6 leading-tight">
+          <div className="w-full md:w-1/2 max-w-lg md:pl-6 lg:pl-10 text-center md:text-left px-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 md:mb-5 leading-tight">
               Special Deals
             </h2>
-            <p className="text-sm sm:text-base md:text-lg mb-6 sm:mb-7 md:mb-8 leading-relaxed text-gray-700">
+            <p className="text-sm sm:text-base md:text-lg mb-5 sm:mb-6 md:mb-7 leading-relaxed text-gray-700">
               All-in-One Portable 250-Watt Speaker with Battery Operation, Digital Mixer, Effects, Remote Control via iOS/Android Mobile App, Bluetooth Audio Streaming and Wireless Microphone Option
             </p>
             <button
@@ -331,7 +331,7 @@ export default function Home() {
         </section>
 
         {/* Our Brands Section */}
-        <section className="fade-in-section bg-cover bg-center bg-white flex flex-col items-center justify-start pt-12 sm:pt-16 md:pt-20 pb-12 sm:pb-16 md:pb-20 text-black px-4 sm:px-6">
+        <section className="fade-in-section bg-cover bg-center bg-white flex flex-col items-center justify-start pt-10 sm:pt-12 md:pt-14 pb-10 sm:pb-12 md:pb-14 text-black px-4 sm:px-6">
           <div className="w-full flex justify-center">
             <img
               src="https://res.cloudinary.com/drkm7uelu/image/upload/v1760011434/OUR_BRANDS_cypqxq.png"
@@ -343,7 +343,7 @@ export default function Home() {
 
         {/* Footer Section */}
         <footer className="bg-white/70 text-black py-8 sm:py-10 md:py-12 px-4 sm:px-6 border-t border-gray-200">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 md:gap-10 items-start">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 items-start">
 
             {/* Left: Logo & Description */}
             <div className="flex flex-col items-start">
