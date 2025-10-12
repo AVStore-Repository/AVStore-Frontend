@@ -259,13 +259,13 @@ export default function Shop() {
   return (
     <div className="min-h-screen bg-cover bg-center bg-no-repeat p-6 relative">
       {/* Categories */}
-      <div className="flex flex-wrap justify-center gap-4 mt-24 mb-4 relative" ref={dropdownRef}>
+      <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-24 mb-4 relative px-2" ref={dropdownRef}>
         {productCategories.map((category) => (
-          <div key={category.name} className="relative w-auto">
+          <div key={category.name} className="relative">
             <button
-              className={`text-lg font-medium flex items-center gap-1 transition-colors px-2 py-1 rounded ${selectedCategory === category.name
-                ? "text-yellow-400 underline"
-                : "text-black hover:text-yellow-300"
+              className={`text-sm sm:text-base md:text-lg font-medium flex items-center gap-1 transition-colors px-2 sm:px-3 py-1 sm:py-2 rounded whitespace-nowrap ${selectedCategory === category.name
+                  ? "text-yellow-400 underline"
+                  : "text-black hover:text-yellow-300"
                 }`}
               onClick={() => {
                 if (category.subcategories && category.subcategories.length > 0) {
@@ -287,12 +287,12 @@ export default function Shop() {
             </button>
 
             {category.subcategories && openCategory === category.name && (
-              <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50 animate-slideDown">
+              <div className="absolute top-full left-0 mt-2 w-40 sm:w-48 bg-white rounded-lg shadow-lg py-2 z-50 animate-slideDown max-h-60 overflow-y-auto">
                 {category.subcategories.map((subcategory) => (
                   <button
                     key={subcategory}
                     onClick={() => handleCategorySelect(subcategory)}
-                    className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${selectedCategory === subcategory ? "bg-blue-100 font-medium" : ""
+                    className={`block w-full text-left px-3 sm:px-4 py-2 text-xs sm:text-sm hover:bg-gray-100 ${selectedCategory === subcategory ? "bg-blue-100 font-medium" : ""
                       }`}
                   >
                     {subcategory}

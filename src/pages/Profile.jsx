@@ -1,33 +1,17 @@
 import { useState, useEffect } from 'react';
-import { User, Package, Edit2, Save, X, Mail, Phone, MapPin, Calendar, ShoppingBag, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Package, X, Calendar, ShoppingBag, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import axios from 'axios';
 import { BASE_URL } from '../config/config';
 import { useNavigate } from 'react-router-dom';
 
 export default function UserProfile() {
-  const [activeTab, setActiveTab] = useState('profile');
-  const [isEditing, setIsEditing] = useState(false);
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const navigate = useNavigate();
-
-  const [userDetails, setUserDetails] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    country: '',
-    zipCode: ''
-  });
-
-  const [editedDetails, setEditedDetails] = useState({ ...userDetails });
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -35,28 +19,6 @@ export default function UserProfile() {
       navigate('/login');
       return;
     }
-
-    const userData = JSON.parse(localStorage.getItem('user') || '{}');
-    setUserDetails({
-      firstName: userData.firstName || '',
-      lastName: userData.lastName || '',
-      email: userData.email || '',
-      phone: userData.phone || '',
-      address: userData.address || '',
-      city: userData.city || '',
-      country: userData.country || 'Sri Lanka',
-      zipCode: userData.zipCode || ''
-    });
-    setEditedDetails({
-      firstName: userData.firstName || '',
-      lastName: userData.lastName || '',
-      email: userData.email || '',
-      phone: userData.phone || '',
-      address: userData.address || '',
-      city: userData.city || '',
-      country: userData.country || 'Sri Lanka',
-      zipCode: userData.zipCode || ''
-    });
 
     // Fetch orders when component mounts
     fetchOrders();
@@ -118,50 +80,6 @@ export default function UserProfile() {
       }
       
       setOrders([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleEditToggle = () => {
-    if (isEditing) {
-      setEditedDetails({ ...userDetails });
-    }
-    setIsEditing(!isEditing);
-  };
-
-  const handleInputChange = (field, value) => {
-    setEditedDetails({ ...editedDetails, [field]: value });
-  };
-
-  const handleSaveProfile = async () => {
-    setError('');
-    setSuccessMessage('');
-    setIsLoading(true);
-
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.put(
-        `${BASE_URL}/user/profile`,
-        editedDetails,
-        { 
-          headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}` 
-          } 
-        }
-      );
-
-      setUserDetails(editedDetails);
-      localStorage.setItem('user', JSON.stringify(editedDetails));
-      setSuccessMessage('Profile updated successfully!');
-      setIsEditing(false);
-      
-      // Clear success message after 3 seconds
-      setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (err) {
-      console.error('Error updating profile:', err);
-      setError(err.response?.data?.message || 'Failed to update profile. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -276,27 +194,7 @@ export default function UserProfile() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
       <div className="max-w-6xl mx-auto">
-        {/* Tabs */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden mt-12">
-          <div className="flex border-b border-gray-200">
-            <button
-              onClick={() => {
-                setActiveTab('orders');
-                if (orders.length === 0 && !isLoading) {
-                  fetchOrders();
-                }
-              }}
-              className={`flex-1 py-4 px-6 text-center font-semibold transition ${
-                activeTab === 'orders'
-                  ? ' text-black'
-                  : 'text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              <Package className="inline-block w-5 h-5 mr-2" />
-              View Orders
-            </button>
-          </div>
-
           {/* Messages */}
           {error && (
             <div className="m-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start">
@@ -304,143 +202,136 @@ export default function UserProfile() {
               <span className="text-red-600">{error}</span>
             </div>
           )}
-          {successMessage && (
-            <div className="m-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-600">
-              {successMessage}
-            </div>
-          )}
 
-          {/* Orders Tab */}
-          {activeTab === 'orders' && (
-            <div className="p-8">
-              <div className="flex justify-between items-center mb-6">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">Order History</h2>
-                  {orders.length > 0 && (
-                    <p className="text-sm text-gray-600 mt-1">
-                      Showing {startIndex + 1}-{Math.min(endIndex, orders.length)} of {orders.length} orders
-                    </p>
-                  )}
-                </div>
-                <button
-                  onClick={fetchOrders}
-                  disabled={isLoading}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
-                >
-                  {isLoading ? 'Refreshing...' : 'Refresh'}
-                </button>
+          {/* Orders Content */}
+          <div className="p-8">
+            <div className="flex justify-between items-center mb-6">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">Order History</h2>
+                {orders.length > 0 && (
+                  <p className="text-sm text-gray-600 mt-1">
+                    Showing {startIndex + 1}-{Math.min(endIndex, orders.length)} of {orders.length} orders
+                  </p>
+                )}
               </div>
-              
-              {isLoading ? (
-                <div className="text-center py-12">
-                  <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-                  <p className="mt-4 text-gray-600">Loading orders...</p>
-                </div>
-              ) : orders.length === 0 ? (
-                <div className="text-center py-12">
-                  <ShoppingBag className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600 text-lg">No orders found</p>
-                  <p className="text-gray-500 text-sm mt-2">Your order history will appear here</p>
-                </div>
-              ) : (
-                <>
-                  <div className="space-y-4">
-                    {currentOrders.map((order, index) => (
-                      <div key={order.id || index} className="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition">
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <div className="flex items-center space-x-3 mb-2">
-                              <h3 className="text-lg font-semibold text-gray-900">
-                                Order #{order.id ? order.id.substring(0, 8).toUpperCase() : startIndex + index + 1}
-                              </h3>
-                              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
-                                {order.status || 'Unknown'}
-                              </span>
-                            </div>
-                            <div className="flex items-center text-sm text-gray-600">
-                              <Calendar className="w-4 h-4 mr-1" />
-                              {formatDate(order.createdAt)}
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-2xl font-bold text-indigo-600">
-                              {formatPrice(order.total)}
-                            </div>
-                            <p className="text-sm text-gray-600 mt-1">
-                              {order.items?.length || 0} item(s)
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="grid md:grid-cols-2 gap-4 mb-4 text-sm">
-                          <div>
-                            <p className="text-gray-600">Payment Method</p>
-                            <p className="font-semibold capitalize">{order.paymentMethod || 'N/A'}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-600">Delivery Method</p>
-                            <p className="font-semibold capitalize">{order.deliveryMethod || 'N/A'}</p>
-                          </div>
-                        </div>
-
-                        <button
-                          onClick={() => setSelectedOrder(order)}
-                          className="w-full mt-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-2 px-4 rounded-lg font-medium hover:from-blue-600 hover:to-indigo-700 transition"
-                        >
-                          View Order Details
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Pagination Controls */}
-                  {totalPages > 1 && (
-                    <div className="mt-8 flex items-center justify-center space-x-2">
-                      <button
-                        onClick={handlePrevious}
-                        disabled={currentPage === 1}
-                        className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
-                        aria-label="Previous page"
-                      >
-                        <ChevronLeft className="w-5 h-5" />
-                      </button>
-
-                      <div className="flex items-center space-x-1">
-                        {getPageNumbers().map((page, index) => (
-                          page === '...' ? (
-                            <span key={`ellipsis-${index}`} className="px-3 py-2 text-gray-400">
-                              ...
+              <button
+                onClick={fetchOrders}
+                disabled={isLoading}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition disabled:opacity-50"
+              >
+                {isLoading ? 'Refreshing...' : 'Refresh'}
+              </button>
+            </div>
+            
+            {isLoading ? (
+              <div className="text-center py-12">
+                <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                <p className="mt-4 text-gray-600">Loading orders...</p>
+              </div>
+            ) : orders.length === 0 ? (
+              <div className="text-center py-12">
+                <ShoppingBag className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                <p className="text-gray-600 text-lg">No orders found</p>
+                <p className="text-gray-500 text-sm mt-2">Your order history will appear here</p>
+              </div>
+            ) : (
+              <>
+                <div className="space-y-4">
+                  {currentOrders.map((order, index) => (
+                    <div key={order.id || index} className="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition">
+                      <div className="flex justify-between items-start mb-4">
+                        <div>
+                          <div className="flex items-center space-x-3 mb-2">
+                            <h3 className="text-lg font-semibold text-gray-900">
+                              Order #{order.id ? order.id.substring(0, 8).toUpperCase() : startIndex + index + 1}
+                            </h3>
+                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
+                              {order.status || 'Unknown'}
                             </span>
-                          ) : (
-                            <button
-                              key={page}
-                              onClick={() => handlePageChange(page)}
-                              className={`px-4 py-2 rounded-lg font-medium transition ${
-                                currentPage === page
-                                  ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white'
-                                  : 'border border-gray-300 hover:bg-gray-50 text-gray-700'
-                              }`}
-                            >
-                              {page}
-                            </button>
-                          )
-                        ))}
+                          </div>
+                          <div className="flex items-center text-sm text-gray-600">
+                            <Calendar className="w-4 h-4 mr-1" />
+                            {formatDate(order.createdAt)}
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-2xl font-bold text-indigo-600">
+                            {formatPrice(order.total)}
+                          </div>
+                          <p className="text-sm text-gray-600 mt-1">
+                            {order.items?.length || 0} item(s)
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-4 mb-4 text-sm">
+                        <div>
+                          <p className="text-gray-600">Payment Method</p>
+                          <p className="font-semibold capitalize">{order.paymentMethod || 'N/A'}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-600">Delivery Method</p>
+                          <p className="font-semibold capitalize">{order.deliveryMethod || 'N/A'}</p>
+                        </div>
                       </div>
 
                       <button
-                        onClick={handleNext}
-                        disabled={currentPage === totalPages}
-                        className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
-                        aria-label="Next page"
+                        onClick={() => setSelectedOrder(order)}
+                        className="w-full mt-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white py-2 px-4 rounded-lg font-medium hover:from-blue-600 hover:to-indigo-700 transition"
                       >
-                        <ChevronRight className="w-5 h-5" />
+                        View Order Details
                       </button>
                     </div>
-                  )}
-                </>
-              )}
-            </div>
-          )}
+                  ))}
+                </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="mt-8 flex items-center justify-center space-x-2">
+                    <button
+                      onClick={handlePrevious}
+                      disabled={currentPage === 1}
+                      className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                      aria-label="Previous page"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+
+                    <div className="flex items-center space-x-1">
+                      {getPageNumbers().map((page, index) => (
+                        page === '...' ? (
+                          <span key={`ellipsis-${index}`} className="px-3 py-2 text-gray-400">
+                            ...
+                          </span>
+                        ) : (
+                          <button
+                            key={page}
+                            onClick={() => handlePageChange(page)}
+                            className={`px-4 py-2 rounded-lg font-medium transition ${
+                              currentPage === page
+                                ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white'
+                                : 'border border-gray-300 hover:bg-gray-50 text-gray-700'
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        )
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={handleNext}
+                      disabled={currentPage === totalPages}
+                      className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                      aria-label="Next page"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
 
