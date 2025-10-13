@@ -89,7 +89,7 @@ export default function Navbar() {
                       className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-black transition-colors"
                       onClick={() => setIsProfileOpen(false)}
                     >
-                      Profile
+                      View Orders
                     </a>
                     <button
                       onClick={handleLogout}
@@ -151,7 +151,7 @@ export default function Navbar() {
                   className="hover:text-yellow-400 text-black font-semibold text-lg"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Profile
+                  View Orders
                 </a>
               </li>
               <li>
