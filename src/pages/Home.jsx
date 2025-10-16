@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,10 +15,60 @@ const products = [
   { id: 10, name: 'Speakers', image: '/images/84.png' },
 ];
 
+const subcategories = [
+  'Studio Equipment',
+  'Headphones & Earphones',
+  'In Ear Monitors',
+  'Accessories',
+  'Amplifiers',
+  'Wired Microphones',
+  'Wireless Microphones',
+  'Podium Microphones',
+  'Active Speakers',
+  'Active Subwoofers',
+  'Passive Speakers',
+  'Passive Subwoofers',
+  'Portable Speakers',
+  'Column Speakers',
+  'Analog Mixers',
+  'Digital Mixers'
+];
+
 export default function Home() {
   const scrollContainerRef = useRef(null);
+  const categoryScrollRef = useRef(null);
   const [visibleCards, setVisibleCards] = useState({});
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
   const navigate = useNavigate();
+
+  // Check scroll position for category navigation
+  // const checkScroll = () => {
+  //   if (categoryScrollRef.current) {
+  //     const { scrollLeft, scrollWidth, clientWidth } = categoryScrollRef.current;
+  //     setCanScrollLeft(scrollLeft > 0);
+  //     setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+  //   }
+  // };
+
+  useEffect(() => {
+    checkScroll();
+    const scrollEl = categoryScrollRef.current;
+    if (scrollEl) {
+      scrollEl.addEventListener('scroll', checkScroll);
+      return () => scrollEl.removeEventListener('scroll', checkScroll);
+    }
+  }, []);
+
+  // const scrollCategories = (direction) => {
+  //   if (categoryScrollRef.current) {
+  //     const scrollAmount = 400;
+  //     categoryScrollRef.current.scrollBy({
+  //       left: direction === 'left' ? -scrollAmount : scrollAmount,
+  //       behavior: 'smooth',
+  //     });
+  //   }
+  // };
 
   // Product card animation observer
   useEffect(() => {
@@ -60,22 +111,40 @@ export default function Home() {
     return () => sectionObserver.disconnect();
   }, []);
 
-  const scroll = (direction) => {
-    if (scrollContainerRef.current) {
-      const scrollAmount = 300;
-      scrollContainerRef.current.scrollBy({
+  // Check scroll position for category navigation
+  const checkScroll = () => {
+    if (categoryScrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = categoryScrollRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    const scrollEl = categoryScrollRef.current;
+    if (scrollEl) {
+      scrollEl.addEventListener('scroll', checkScroll);
+      return () => scrollEl.removeEventListener('scroll', checkScroll);
+    }
+  }, []);
+
+  const scrollCategories = (direction) => {
+    if (categoryScrollRef.current) {
+      const scrollAmount = 400;
+      categoryScrollRef.current.scrollBy({
         left: direction === 'left' ? -scrollAmount : scrollAmount,
         behavior: 'smooth',
       });
     }
   };
 
-  const handleQuickView = (product) => {
-    alert(`Quick view: ${product.name}`);
+  const handleShopNow = () => {
+    alert('Navigating to Shop page...');
   };
 
-  const handleShopNow = () => {
-    navigate('/shop');
+  const handleSubcategoryClick = (subcategory) => {
+    alert(`Navigating to shop with filter: ${subcategory}`);
   };
 
   return (
@@ -219,6 +288,46 @@ export default function Home() {
           <h4 className="text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-semibold mb-5 sm:mb-6 md:mb-7 drop-shadow-lg text-center px-2 text-gray-700 max-w-4xl leading-relaxed">
             Your One-Stop Shop for Professional Audio-Visual Equipment
           </h4>
+          <div className="w-full max-w-7xl mx-auto mb-8 sm:mb-10">
+            <div className="relative p-6 sm:p-8 md:p-10">
+              {/* Navigation Arrows */}
+              {canScrollLeft && (
+                <button
+                  onClick={() => scrollCategories('left')}
+                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 rounded-full p-2 sm:p-3 shadow-lg transition-all duration-300 hover:scale-110"
+                  aria-label="Scroll left"
+                >
+                  <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+                </button>
+              )}
+
+              {canScrollRight && (
+                <button
+                  onClick={() => scrollCategories('right')}
+                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 rounded-full p-2 sm:p-3 shadow-lg transition-all duration-300 hover:scale-110"
+                  aria-label="Scroll right"
+                >
+                  <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                </button>
+              )}
+
+              {/* Scrollable Subcategories Container */}
+              <div
+                ref={categoryScrollRef}
+                className="flex gap-3 sm:gap-4 overflow-x-auto no-scrollbar px-10 sm:px-12 py-2 scroll-smooth"
+              >
+                {subcategories.map((subcategory, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleSubcategoryClick(subcategory)}
+                    className="subcategory-chip flex-shrink-0 bg-gradient-to-br from-gray-700 to-gray-800 hover:from-gray-600 hover:to-gray-700 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-sm sm:text-base font-medium shadow-lg border border-gray-600 whitespace-nowrap cursor-pointer"
+                  >
+                    {subcategory}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
           <button
             onClick={handleShopNow}
             className="bg-black hover:bg-gray-800 transition-all duration-300 text-white font-semibold py-2.5 sm:py-3 md:py-4 px-6 sm:px-8 md:px-12 rounded-full shadow-xl text-sm sm:text-base md:text-lg hover:shadow-2xl transform hover:scale-105"
