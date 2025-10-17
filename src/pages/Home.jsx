@@ -140,11 +140,13 @@ export default function Home() {
   };
 
   const handleShopNow = () => {
-    alert('Navigating to Shop page...');
+    // alert('Navigating to Shop page...');
+    navigate('/shop')
   };
 
   const handleSubcategoryClick = (subcategory) => {
-    alert(`Navigating to shop with filter: ${subcategory}`);
+    // alert(`Navigating to shop with filter: ${subcategory}`);
+    navigate('/shop')
   };
 
   return (
