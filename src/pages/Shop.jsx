@@ -5,6 +5,7 @@ import { CartContext } from "../context/CartContext";
 import { BASE_URL } from "../config/config";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useLocation } from 'react-router-dom';
 
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat("en-LK", {
@@ -41,8 +42,10 @@ const productCategories = [
 export default function Shop() {
   const [search, setSearch] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const location = useLocation();
+  const subcategory = location.state;
   const [openCategory, setOpenCategory] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState("All Products");
+  const [selectedCategory, setSelectedCategory] = useState(subcategory == 'All' ? "All Products" : subcategory);
   const { cart, addToCart } = useContext(CartContext);
   const [availableProduct, setAvailableProduct] = useState([]);
   const navigate = useNavigate();

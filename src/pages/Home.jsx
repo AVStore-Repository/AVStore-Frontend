@@ -16,6 +16,7 @@ const products = [
 ];
 
 const subcategories = [
+  'All',
   'Studio Equipment',
   'Headphones & Earphones',
   'In Ear Monitors',
@@ -146,7 +147,7 @@ export default function Home() {
 
   const handleSubcategoryClick = (subcategory) => {
     // alert(`Navigating to shop with filter: ${subcategory}`);
-    navigate('/shop')
+    navigate('/shop',{state:subcategory})
   };
 
   return (
