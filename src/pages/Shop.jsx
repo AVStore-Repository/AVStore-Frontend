@@ -45,7 +45,7 @@ export default function Shop() {
   const location = useLocation();
   const subcategory = location.state;
   const [openCategory, setOpenCategory] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState(subcategory == 'All' ? "All Products" : subcategory);
+  const [selectedCategory, setSelectedCategory] = useState(subcategory == 'All' ? "All Products" : subcategory || "All Products");
   const { cart, addToCart } = useContext(CartContext);
   const [availableProduct, setAvailableProduct] = useState([]);
   const navigate = useNavigate();
