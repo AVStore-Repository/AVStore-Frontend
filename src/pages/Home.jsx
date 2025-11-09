@@ -3,7 +3,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const products = [
-  { id: 1, name: 'Sound Box', image: '/images/1.png' },
+  { id: 1, name: 'Sound BoX', image: '/images/1.png' },
   { id: 2, name: 'Mixer', image: '/images/3.png' },
   { id: 3, name: 'Microphone', image: '/images/5.png' },
   { id: 4, name: 'Microphone', image: '/images/7.png' },
