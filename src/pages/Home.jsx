@@ -16,7 +16,7 @@ const products = [
 ];
 
 const subcategories = [
-  'ALL',
+  'All',
   'Studio Equipment',
   'Headphones & Earphones',
   'In Ear Monitors',
