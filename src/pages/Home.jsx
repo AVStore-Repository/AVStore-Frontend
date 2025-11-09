@@ -341,7 +341,7 @@ export default function Home() {
           {/* Banner placed right under Shop Now button */}
           <div className="mt-6 sm:mt-7 md:mt-8 w-full flex justify-center px-4">
             <img
-              src="/images/Banner.png"
+              src="https://res.cloudinary.com/dtscqhcop/image/upload/v1762690183/30c8ab17-5b53-4646-8d9b-fdfa027d5b68_vbz3ej.png"
               alt="Promotional Banner"
               className="w-full h-auto max-w-6xl rounded-lg shadow-lg"
             />
