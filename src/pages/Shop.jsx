@@ -448,7 +448,7 @@ export default function Shop() {
           })
         ) : (
           <div className="col-span-3 text-center text-gray-700 py-10">
-            <p className="text-xl mb-2">No products found</p>
+            <p className="text-xl mb-2">Loading...</p>
             {(search || selectedCategory !== "All Products") && (
               <button
                 onClick={() => {
