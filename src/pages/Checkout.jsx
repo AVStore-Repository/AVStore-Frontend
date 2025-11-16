@@ -16,7 +16,7 @@ export default function Checkout() {
     address: "",
     city: "",
     zipCode: "00100",
-    paymentMethod: "cash",
+    paymentMethod: "koko",
     deliveryMethod: "",
     promoCodeList: cart.map((item) => ({
       productId: item.id,             // Product ID from cart
@@ -45,6 +45,9 @@ export default function Checkout() {
 
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const kokoFee = form.paymentMethod === "koko" ? baseTotal * 0.05 : 0;
+  const finalTotal = baseTotal + kokoFee; // this final total is shown & sent to backend ✔
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -99,7 +102,7 @@ export default function Checkout() {
       const orderData = {
         customer: form,
         items: cart,
-        total: total,
+        total: finalTotal,// Send KOKO fee included total ✔
         deliveryMethod: form.deliveryMethod,
         paymentMethod: form.paymentMethod,
       };
@@ -185,7 +188,7 @@ export default function Checkout() {
         try {
           const res = await axios.post(`${BASE_URL}/payment/create-koko-payment`, {
             orderId: order.id,
-            amount: total,
+            amount: finalTotal.toFixed(2),// KOKO receives fee included total 
             currency: "LKR",
             firstName: form.firstName,
             lastName: form.lastName,
