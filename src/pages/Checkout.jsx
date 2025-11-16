@@ -44,8 +44,11 @@ export default function Checkout() {
   console.log(cart);
 
 
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
+  const baseTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const total = form.paymentMethod === "koko"
+    ? baseTotal * 1.05   // +5% fee automatically
+    : baseTotal;
+    
   const kokoFee = form.paymentMethod === "koko" ? baseTotal * 0.05 : 0;
   const finalTotal = baseTotal + kokoFee; // this final total is shown & sent to backend ✔
 
