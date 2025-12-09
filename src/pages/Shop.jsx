@@ -6,6 +6,13 @@ import { BASE_URL } from "../config/config";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useLocation } from 'react-router-dom';
+import {
+  FaShareAlt,
+  FaWhatsapp,
+  FaFacebook,
+  FaInstagram,
+  FaCopy
+} from "react-icons/fa";
 
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat("en-LK", {
@@ -48,6 +55,7 @@ export default function Shop() {
   const [selectedCategory, setSelectedCategory] = useState(subcategory == 'All' ? "All Products" : subcategory || "All Products");
   const { cart, addToCart } = useContext(CartContext);
   const [availableProduct, setAvailableProduct] = useState([]);
+  const [activeShare, setActiveShare] = useState(null);
   const navigate = useNavigate();
 
   // Promo code states
@@ -435,6 +443,72 @@ export default function Shop() {
                       <FaShoppingCart className="text-black text-lg" />
                     )}
                   </button>
+          {/* Share Popup Button */}
+                  <div className="relative">
+                    <button
+                      onClick={() =>setActiveShare(p.id)}
+                      className="bg-gray-200/70 p-2 rounded-full hover:bg-gray-300/70 transition-colors"
+                    >
+                   <FaShareAlt className="text-blue-600 text-lg" />
+                  </button>
+                  
+            {activeShare === p.id && (
+              <div className="absolute top-12 right-0 bg-white shadow-lg rounded-lg p-3 w-44 z-50">
+
+              {/* WhatsApp */}
+                <button
+                  onClick={() => {
+                    const link = `${window.location.origin}/product/${p.id}`;
+                    const text = `Check this out: ${p.name}\n${link}`;
+                    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+                    setActiveShare(null);
+                  }}
+                  className="flex items-center gap-2 w-full p-2 hover:bg-gray-100 rounded"
+                >
+                  <FaWhatsapp className="text-green-600" /> WhatsApp
+                </button>
+
+                {/* Facebook */}
+                <button
+                  onClick={() => {
+                    const link = `${window.location.origin}/product/${p.id}`;
+                    window.open(
+                      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(link)}`,
+                      "_blank"
+                    );
+                    setActiveShare(null);
+                  }}
+                  className="flex items-center gap-2 w-full p-2 hover:bg-gray-100 rounded"
+                >
+                  <FaFacebook className="text-blue-600" /> Facebook
+                </button>
+
+              {/* Instagram (copy) */}
+                <button
+                  onClick={() => {
+                    const link = `${window.location.origin}/product/${p.id}`;
+                    navigator.clipboard.writeText(link);
+                    alert("Link copied! Paste it in Instagram.");
+                    setActiveShare(null);
+                  }}
+                  className="flex items-center gap-2 w-full p-2 hover:bg-gray-100 rounded"
+                >
+                  <FaInstagram className="text-pink-600" /> Instagram
+                </button>
+
+              {/* Copy Link */}
+                <button
+                  onClick={() => {
+                    const link = `${window.location.origin}/product/${p.id}`;
+                    navigator.clipboard.writeText(link);
+                    alert("Link copied to clipboard!");
+                    setActiveShare(null);
+                  }}
+                  className="flex items-center gap-2 w-full p-2 hover:bg-gray-100 rounded"
+                >
+                  <FaCopy className="text-gray-700" /> Copy Link
+                </button>
+
 
                   <button
                     onClick={() => setSelectedProduct(p)}
@@ -443,7 +517,11 @@ export default function Shop() {
                     Details
                   </button>
                 </div>
+            )}
               </div>
+                    </div>
+      </div>
+              
             );
           })
         ) : (
