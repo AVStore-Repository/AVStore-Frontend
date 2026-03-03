@@ -401,8 +401,8 @@ export default function Home() {
           <div className="w-full md:w-1/2 flex justify-center mb-6 sm:mb-8 md:mb-0 md:pr-6 lg:pr-10">
             <div className="relative max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg rounded-lg overflow-hidden shadow-2xl bg-gray-100">
               <img
-                src="https://res.cloudinary.com/drkm7uelu/image/upload/v1759216697/Bundle_Offer_lysgsl.png"
-                alt="B1X Speaker"
+                src="https://res.cloudinary.com/dtscqhcop/image/upload/v1772513364/bhgh_p8ofk7.png"
+                alt="MPA"
                 className="w-full h-auto object-contain"
               />
               <div
@@ -421,7 +421,7 @@ export default function Home() {
               Special Deals
             </h2>
             <p className="text-sm sm:text-base md:text-lg mb-5 sm:mb-6 md:mb-7 leading-relaxed text-gray-700">
-              All-in-One Portable 250-Watt Speaker with Battery Operation, Digital Mixer, Effects, Remote Control via iOS/Android Mobile App, Bluetooth Audio Streaming and Wireless Microphone Option
+              Experience powerful sound and wireless freedom with the Behringer MPA Series. Perfect for any event, anywhere. Get yours today!
             </p>
             <button
               onClick={() => navigate('/shop')}
